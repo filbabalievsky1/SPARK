@@ -8,7 +8,7 @@ abstract: The Staten Island Borough President's Office and New Dorp High School,
 
 # Introduction
 
-
+This is a replication file for Babalievsky and Sehgal (2018), an evaluation of Project SPARK.
 
 # Preliminaries
 
@@ -36,7 +36,9 @@ eval(parse(text = getURL(url_robust, ssl.verifypeer = FALSE)),
      envir=.GlobalEnv)
 ```
 
-First we import data for the ninth graders in New Dorp High who are enrolled in SPARK. Note that there are 57 students in SPARK and 37 students in New Dorp's 9th grade class not in SPARK. The seventh tab of the Excel file holds data for SPARK students in their first marking periods in English, math, and science.
+# The Data
+
+First we import data for the ninth graders in the Health Sciences SLC in New Dorp High who are enrolled in SPARK. Note that there are 57 students in SPARK and 37 students in New Dorp's 9th grade class not in SPARK. The seventh tab of the Excel file holds data for SPARK students in their first marking periods in English, math, and science. There are 171 observations, 3 classes times 51 students.
 
 ```{r}
 hs_spark_1<-read_excel("SPARK 2017 HN copy.xlsx", sheet = 7, col_names = FALSE)
@@ -49,7 +51,7 @@ hs_spark_1$Spark<-1
 hs_spark_1$HS<-1
 ```
 
-Next we import data for ninth graders who are in New Dorp High School but not in SPARK.
+Next we import data for ninth graders who are in the Health Sciences SLC in New Dorp High School but not in SPARK. There are 111 observations, 3 classes times 37 students.
 
 ```{r}
 hs_nonspark_1<-read_excel("SPARK 2017 HN copy.xlsx", sheet = 8, col_names = FALSE)
@@ -58,9 +60,10 @@ names(hs_nonspark_1)<-c("StudentID", "Course", "Mark1")
 hs_nonspark_1$Spark<-0
 #dummy for New Dorp High School Students
 hs_nonspark_1$HS<-1
+nrow(hs_nonspark_1)
 ```
 
-And finally, we import data for ninth graders who are not in New Dorp High School but not in SPARK.
+And finally, we import data for ninth graders who are not in the Health Sciences SLC in New Dorp High School and therefore not in SPARK.
 
 ```{r}
 non_hs_1<-read_excel("SPARK 2017 HN copy.xlsx", sheet = 9, col_names = FALSE)
@@ -69,17 +72,59 @@ non_hs_1$Spark<-0
 non_hs_1$HS<-0
 ```
 
+Here we combine the results from the first marking period with those of the second marking period.
+
 ```{r}
 first<-rbind(hs_spark_1, hs_nonspark_1)
 first<-rbind(first, non_hs_1)
 
 all_mp_2<-read_excel("SPARK MP2 Grades copy.xlsx", sheet = 1)
+names(all_mp_2)
+names(all_mp_2)<-c("StudentID", "Course", "Mark2")
 
 total<-merge(first, all_mp_2, by=c("StudentID", "Course"))
-total$diff<-as.numeric(as.character(total$Mark))-as.numeric(as.character(total$Mark1))
+total$diff<-as.numeric(as.character(total$Mark2))-as.numeric(as.character(total$Mark1))
 
 
 total_hs<-total[total$HS==1,]
+nrow(total_hs[total_hs$Spark==0,])
+nrow(total_hs[total_hs$Spark==1,])
+
+```
+
+
+Next we look at the data from marking periods 3 and 4 and try to merge them with the data from periods 1 and 2.
+
+```{r}
+three_and_four<-read_excel("SPARK 2017 Term 2 MP3 and MP4 copy.xlsx", sheet = 2)
+three_and_four<-three_and_four[,-6]
+#three_and_four<-read_excel("SPARK 2017 Term 2 MP3 and MP4.xlsx", sheet = 1, col_names = TRUE)
+three_and_four
+max(three_and_four$StudentID)
+max(total$StudentID)
+mean(as.numeric(three_and_four$MP4), na.rm=TRUE)-mean(as.numeric(three_and_four$MP3), na.rm=TRUE)
+
+ncol(three_and_four)
+nrow(three_and_four)
+names(three_and_four)<-c("StudentID", "Blank1",  "Course", "Blank3", "Blank4", "Blank5", "MP3", "MP4", "Final")
+three_and_four
+total
+
+Final_All_Grades<-total_hs[total_hs$StudentID==three_and_four$StudentID,]
+Final_All_Grades<-total_hs[total_hs$StudentID %in% three_and_four$StudentID, ]
+
+#Final_All_Grades<-merge(total, three_and_four, by=c("StudentID", "Course"))
+Final_All_Grades
+is.numeric(three_and_four$StudentID)
+is.numeric(total$StudentID)
+is.character(three_and_four$Course)
+is.character(total$Course)
+nrow(Final_All_Grades)
+
+```
+
+
+```{r}
 
 total_hs$mp1<-as.numeric(as.character(total_hs$Mark1))
 mean(total_hs$diff)
