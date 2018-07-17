@@ -1,0 +1,101 @@
+---
+title: "SPARK in Staten Island"
+output: pdf_document
+author: Evaluated on behalf of Borough Hall and New Dorp High School by Fil Babalievsky
+abstract: The Staten Island Borough President's Office and New Dorp High School, advised by Dr. John Ratey, have begun an evaluation of the effects of intense aerobic exercise on academic achievement. This is an extremely early policy evaluation based on two marking periods of data. These preliminary results show some promise and line up with results from the rest of the education literature.
+
+---
+
+
+```{r, echo=FALSE, message=FALSE, warning=FALSE,results='hide'}
+library(xlsx)
+library(stargazer)
+library(RCurl)
+
+# import the function from repository
+# thanks https://economictheoryblog.com/2016/12/13/clustered-standard-errors-in-r/
+url_robust <- "https://raw.githubusercontent.com/IsidoreBeautrelet/economictheoryblog/master/robust_summary.R"
+eval(parse(text = getURL(url_robust, ssl.verifypeer = FALSE)),
+     envir=.GlobalEnv)
+
+hs_spark_1<-read.xlsx("SPARK 2017 HN.xlsx", sheetIndex = 7, header = FALSE)
+names(hs_spark_1)<-c("StudentID", "Course", "Mark1")
+hs_spark_1$Spark<-1
+hs_spark_1$HS<-1
+
+hs_nonspark_1<-read.xlsx("SPARK 2017 HN.xlsx", sheetIndex = 8, header = FALSE)
+names(hs_nonspark_1)<-c("StudentID", "Course", "Mark1")
+hs_nonspark_1$Spark<-0
+hs_nonspark_1$HS<-1
+
+non_hs_1<-read.xlsx("SPARK 2017 HN.xlsx", sheetIndex = 9, header = FALSE)
+names(non_hs_1)<-c("StudentID", "Course", "Mark1")
+non_hs_1$Spark<-0
+non_hs_1$HS<-0
+
+first<-rbind(hs_spark_1, hs_nonspark_1)
+first<-rbind(first, non_hs_1)
+
+all_mp_2<-read.xlsx("SPARK MP2 Grades.xlsx", sheetIndex = 1)
+
+total<-merge(first, all_mp_2, by=c("StudentID", "Course"))
+total$diff<-as.numeric(as.character(total$Mark))-as.numeric(as.character(total$Mark1))
+
+
+total_hs<-total[total$HS==1,]
+
+total_hs$mp1<-as.numeric(as.character(total_hs$Mark1))
+mean(total_hs$diff)
+
+summary(total_hs$diff)
+
+lm1<-lm(diff~Spark,data=total_hs)
+summary(lm1)
+summary(lm1, cluster=c("StudentID"))
+
+lm1a<-lm(mp1~Spark,data=total_hs)
+summary(lm1a)
+summary(lm1a, cluster=c("StudentID"))
+
+total_hs$coursechar<-as.character(total_hs$Course)
+total_hs$Type<-substr(total_hs$coursechar, 1, 1)
+
+
+total_hs$Spark_math<-0
+total_hs$Spark_math[total_hs$Spark==1&total_hs$Type=="M"]<-1
+
+total_hs$Spark_sci<-0
+total_hs$Spark_sci[total_hs$Spark==1&total_hs$Type=="S"]<-1
+
+total_hs$Spark_eng<-0
+total_hs$Spark_eng[total_hs$Spark==1&total_hs$Type=="E"]<-1
+
+
+
+total_hs$math<-0
+total_hs$math[total_hs$Type=="M"]<-1
+
+total_hs$sci<-0
+total_hs$sci[total_hs$Type=="S"]<-1
+
+total_hs$eng<-0
+total_hs$eng[total_hs$Type=="E"]<-1
+
+
+
+lm2<-lm(diff~Spark_math+Spark_sci+Spark_eng+math+eng,data=total_hs)
+summary(lm2)
+summary(lm2, cluster=c("StudentID"))
+
+lm2a<-lm(mp1~Spark_math+Spark_sci+Spark_eng+math+eng,data=total_hs)
+summary(lm2a)
+summary(lm2a, cluster=c("StudentID"))
+
+write.csv(total_hs, file = "totalhs.csv")
+
+levels(total_hs$Course)
+
+
+
+
+```
