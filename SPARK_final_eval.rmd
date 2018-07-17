@@ -1,14 +1,18 @@
 ---
 title: "SPARK in Staten Island"
 output: pdf_document
-author: Evaluated on behalf of Borough Hall and New Dorp High School by Fil Babalievsky
+author: Evaluated on behalf of Borough Hall and New Dorp High School by Fil Babalievsky and Atishay Sehgal
 abstract: The Staten Island Borough President's Office and New Dorp High School, advised by Dr. John Ratey, have begun an evaluation of the effects of intense aerobic exercise on academic achievement.
 
 ---
 
+# Introduction
+
+
+
 # Preliminaries
 
-First we set our working directory to the path with the data (not a local file--we cannot store )
+First we load prerequisite pack and set our working directory to the path with the data (not a local file--we cannot store the data in a public repo.)
 
 ```{r}
 install.packages("tidyverse")
@@ -16,41 +20,60 @@ install.packages("stargazer")
 install.packages("Rcurl")
 install.packages("readxl")
 library(tidyverse)
-library(tidyr)
 library(stargazer)
 library(RCurl)
 library(readxl)
 setwd("~/Dropbox/New SI Stuff/SPARK Eval")
 ```
 
+Next we import a function for clustered standard errors.
+
 ```{r}
-
-
 # import the function from repository
 # thanks https://economictheoryblog.com/2016/12/13/clustered-standard-errors-in-r/
 url_robust <- "https://raw.githubusercontent.com/IsidoreBeautrelet/economictheoryblog/master/robust_summary.R"
 eval(parse(text = getURL(url_robust, ssl.verifypeer = FALSE)),
      envir=.GlobalEnv)
+```
 
-hs_spark_1<-read_xlsx("SPARK 2017 HN.xlsx", sheet = 7, header = FALSE)
+First we import data for the ninth graders in New Dorp High who are enrolled in SPARK. Note that there are 57 students in SPARK and 37 students in New Dorp's 9th grade class not in SPARK. The seventh tab of the Excel file holds data for SPARK students in their first marking periods in English, math, and science.
+
+```{r}
+hs_spark_1<-read_excel("SPARK 2017 HN copy.xlsx", sheet = 7, col_names = FALSE)
 names(hs_spark_1)<-c("StudentID", "Course", "Mark1")
+hs_spark_1
+nrow(hs_spark_1)
+#dummy for Spark participation
 hs_spark_1$Spark<-1
+#dummy for New Dorp High School students
 hs_spark_1$HS<-1
+```
 
-hs_nonspark_1<-read.xlsx("SPARK 2017 HN.xlsx", sheetIndex = 8, header = FALSE)
+Next we import data for ninth graders who are in New Dorp High School but not in SPARK.
+
+```{r}
+hs_nonspark_1<-read_excel("SPARK 2017 HN copy.xlsx", sheet = 8, col_names = FALSE)
 names(hs_nonspark_1)<-c("StudentID", "Course", "Mark1")
+#dummy for SPARK non-participation
 hs_nonspark_1$Spark<-0
+#dummy for New Dorp High School Students
 hs_nonspark_1$HS<-1
+```
 
-non_hs_1<-read.xlsx("SPARK 2017 HN.xlsx", sheetIndex = 9, header = FALSE)
+And finally, we import data for ninth graders who are not in New Dorp High School but not in SPARK.
+
+```{r}
+non_hs_1<-read_excel("SPARK 2017 HN copy.xlsx", sheet = 9, col_names = FALSE)
 names(non_hs_1)<-c("StudentID", "Course", "Mark1")
 non_hs_1$Spark<-0
 non_hs_1$HS<-0
+```
 
+```{r}
 first<-rbind(hs_spark_1, hs_nonspark_1)
 first<-rbind(first, non_hs_1)
 
-all_mp_2<-read.xlsx("SPARK MP2 Grades.xlsx", sheetIndex = 1)
+all_mp_2<-read_excel("SPARK MP2 Grades copy.xlsx", sheet = 1)
 
 total<-merge(first, all_mp_2, by=c("StudentID", "Course"))
 total$diff<-as.numeric(as.character(total$Mark))-as.numeric(as.character(total$Mark1))
