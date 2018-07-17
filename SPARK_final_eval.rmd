@@ -2,15 +2,29 @@
 title: "SPARK in Staten Island"
 output: pdf_document
 author: Evaluated on behalf of Borough Hall and New Dorp High School by Fil Babalievsky
-abstract: The Staten Island Borough President's Office and New Dorp High School, advised by Dr. John Ratey, have begun an evaluation of the effects of intense aerobic exercise on academic achievement. This is an extremely early policy evaluation based on two marking periods of data. These preliminary results show some promise and line up with results from the rest of the education literature.
+abstract: The Staten Island Borough President's Office and New Dorp High School, advised by Dr. John Ratey, have begun an evaluation of the effects of intense aerobic exercise on academic achievement.
 
 ---
 
+# Preliminaries
 
-```{r, echo=FALSE, message=FALSE, warning=FALSE,results='hide'}
-library(xlsx)
+First we set our working directory to the path with the data (not a local file--we cannot store )
+
+```{r}
+install.packages("tidyverse")
+install.packages("stargazer")
+install.packages("Rcurl")
+install.packages("readxl")
+library(tidyverse)
+library(tidyr)
 library(stargazer)
 library(RCurl)
+library(readxl)
+setwd("~/Dropbox/New SI Stuff/SPARK Eval")
+```
+
+```{r}
+
 
 # import the function from repository
 # thanks https://economictheoryblog.com/2016/12/13/clustered-standard-errors-in-r/
@@ -18,7 +32,7 @@ url_robust <- "https://raw.githubusercontent.com/IsidoreBeautrelet/economictheor
 eval(parse(text = getURL(url_robust, ssl.verifypeer = FALSE)),
      envir=.GlobalEnv)
 
-hs_spark_1<-read.xlsx("SPARK 2017 HN.xlsx", sheetIndex = 7, header = FALSE)
+hs_spark_1<-read_xlsx("SPARK 2017 HN.xlsx", sheet = 7, header = FALSE)
 names(hs_spark_1)<-c("StudentID", "Course", "Mark1")
 hs_spark_1$Spark<-1
 hs_spark_1$HS<-1
@@ -94,8 +108,5 @@ summary(lm2a, cluster=c("StudentID"))
 write.csv(total_hs, file = "totalhs.csv")
 
 levels(total_hs$Course)
-
-
-
 
 ```
