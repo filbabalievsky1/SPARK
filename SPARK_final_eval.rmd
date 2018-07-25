@@ -1,6 +1,6 @@
 ---
 title: "SPARK in Staten Island"
-output: pdf_document
+output: github_document
 author: Evaluated on behalf of Borough Hall and New Dorp High School by Fil Babalievsky and Atishay Sehgal
 abstract: The Staten Island Borough President's Office and New Dorp High School, advised by Dr. John Ratey, have begun an evaluation of the effects of intense aerobic exercise on academic achievement.
 
@@ -15,16 +15,18 @@ This is a replication file for Babalievsky and Sehgal (2018), an evaluation of P
 First we load prerequisite pack and set our working directory to the path with the data (not a local file--we cannot store the data in a public repo.)
 
 ```{r}
-install.packages("tidyverse")
-install.packages("stargazer")
-install.packages("Rcurl")
-install.packages("readxl")
+setwd("~/Dropbox/New SI Stuff/SPARK Eval")
+knitr::opts_knit$set(root.dir = "~/Dropbox/New SI Stuff/SPARK Eval")
+#install.packages("tidyverse")
+#install.packages("stargazer")
+#install.packages("Rcurl")
+#install.packages("readxl")
 library(tidyverse)
 library(dplyr)
 library(stargazer)
 library(RCurl)
 library(readxl)
-setwd("~/Dropbox/New SI Stuff/SPARK Eval")
+
 ```
 
 Next we import a function for clustered standard errors.
@@ -44,7 +46,7 @@ First we import data for the ninth graders in the Health Sciences SLC in New Dor
 ```{r}
 hs_spark_1<-read_excel("SPARK 2017 HN copy.xlsx", sheet = 7, col_names = FALSE)
 names(hs_spark_1)<-c("StudentID", "Course", "Mark1")
-hs_spark_1
+
 nrow(hs_spark_1)
 #dummy for Spark participation
 hs_spark_1$Spark<-1
@@ -62,6 +64,7 @@ hs_nonspark_1$Spark<-0
 #dummy for New Dorp High School Students
 hs_nonspark_1$HS<-1
 nrow(hs_nonspark_1)
+
 ```
 
 
@@ -71,11 +74,14 @@ Here we combine the results from the first marking period with those of the seco
 first<-rbind(hs_spark_1, hs_nonspark_1)
 
 
+
 all_mp_2<-read_excel("SPARK MP2 Grades copy.xlsx", sheet = 1)
 names(all_mp_2)
 names(all_mp_2)<-c("StudentID", "Course", "Mark2")
 
-total<-merge(first, all_mp_2, by=c("StudentID", "Course"))
+#total<-merge(first, all_mp_2, by=c("StudentID", "Course"))
+total<-left_join(first, all_mp_2, by=c("StudentID", "Course"))
+
 total$diff<-as.numeric(as.character(total$Mark2))-as.numeric(as.character(total$Mark1))
 
 
@@ -90,24 +96,20 @@ Next we look at the data from marking periods 3 and 4 and try to merge them with
 
 ```{r}
 three_and_four_again<-read_excel("SPARK 2017 Term 2 MP3 and MP4 copy.xlsx", sheet = 1)
-three_and_four_again
 names(three_and_four_again)<-c("StudentID", "Blank1", "Blank2",  "Course", "Blank3", "Blank4", "Blank5", "Blank6", "MP3", "MP4", "Final")
 
 total_hs<-total[total$HS==1,]
 total_hs$firsfour<-substr(total_hs$Course, 1, 4)
 total_hs$lastthree<-substr(total_hs$Course, 6, 8)
 total_hs$Course<-paste(total_hs$firsfour, total_hs$lastthree, sep="2")
-total_hs
 nrow(total_hs)
 
 Final<-left_join(total_hs, three_and_four_again, by=c("StudentID", "Course"))
-Final
 nrow(Final)
 nrow(Final[Final$Spark==0,])
 nrow(Final[Final$Spark==1,])
 
 Final$Final <- NULL
-Final
 
 is.numeric(Final$Mark1)
 is.numeric(Final$MP4)
@@ -222,6 +224,9 @@ summary(as.numeric(dropouts$Mark2)-as.numeric(dropouts$Mark1))
 summary(as.numeric(Final$Mark2)-as.numeric(Final$Mark1))
 
 mean(dropouts$diff)
+
+x<-Final[Final$StudentID=="226514768",]
+x
 summary(Final$diff1)
 
 write.csv(Final, file = "Final_Spark.csv")
