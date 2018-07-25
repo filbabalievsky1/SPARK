@@ -20,6 +20,7 @@ knitr::opts_knit$set(root.dir = "~/Dropbox/New SI Stuff/SPARK Eval")
 #install.packages("tidyverse")
 #install.packages("stargazer")
 #install.packages("Rcurl")
+#install.packages("dplyr")
 #install.packages("readxl")
 library(tidyverse)
 library(dplyr)
@@ -78,14 +79,11 @@ first<-rbind(hs_spark_1, hs_nonspark_1)
 all_mp_2<-read_excel("SPARK MP2 Grades copy.xlsx", sheet = 1)
 names(all_mp_2)
 names(all_mp_2)<-c("StudentID", "Course", "Mark2")
-
-#total<-merge(first, all_mp_2, by=c("StudentID", "Course"))
 total<-left_join(first, all_mp_2, by=c("StudentID", "Course"))
 
 total$diff<-as.numeric(as.character(total$Mark2))-as.numeric(as.character(total$Mark1))
-
-
 total_hs<-total[total$HS==1,]
+
 nrow(total_hs[total_hs$Spark==0,])
 nrow(total_hs[total_hs$Spark==1,])
 
@@ -213,6 +211,25 @@ plot(Final$MP3)
 plot(Final$MP4)
 
 ```
+Next, we note that a small number of kids are in a more advanced math course. The first letter of the course identifier indicates the broad subject, whereas the second indicates the specific course. A second letter "E" indicates algebra 1, whereas a second letter "G" indicates a more advanced geometry course. We add dummies for this higher level math course and for its interaction with SPARK. Nothing important changes.
+
+The number of students in a different science level was tiny, so we do not bother cutting up the sample along that dimension.
+
+All students were at the same level of English.
+
+```{r}
+Final$Type2<-substr(Final$coursechar, 1, 2)
+
+
+Final$adv_math<-0
+Final$adv_math[Final$Type2=="MG"]<-1
+Final$Spark_adv_math<-0
+Final$Spark_adv_math[Final$Spark==1&Final$Type2=="MG"]<-1
+
+lm3_subj_adv<-lm(diff3~Spark_math+Spark_sci+Spark_eng+math+eng+adv_math+Spark_adv_math,data=Final)
+summary(lm3_subj_adv)
+```
+
 
 Next we look at the kids who left our sample after Marking Period 2. Note that the SPARK students who dropped out of the sample had high MP1 grades, and an MP1 to MP2 drop that was not unusually great. We do not know why they left the sample.
 
@@ -224,6 +241,18 @@ summary(as.numeric(dropouts$Mark2)-as.numeric(dropouts$Mark1))
 summary(as.numeric(Final$Mark2)-as.numeric(Final$Mark1))
 
 mean(dropouts$diff)
+
+third_missing <- Final[which(is.na(Final$MP3)),]
+third_missing
+
+
+any_missing <- Final[is.na(Final$MP3) | is.na(Final$MP4) | is.na(Final$Mark1) | is.na(Final$Mark2),]
+cid <- unique(Final$Course)
+cid<- 1:length(unique(Final$Course))
+cid
+myvars<-c("Course", "Spark", "Mark1", "Mark2", "MP3", "MP4")
+any_missing2<-any_missing[,myvars]
+any_missing2
 
 x<-Final[Final$StudentID=="226514768",]
 x
