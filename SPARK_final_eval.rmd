@@ -64,20 +64,12 @@ hs_nonspark_1$HS<-1
 nrow(hs_nonspark_1)
 ```
 
-And finally, we import data for ninth graders who are not in the Health Sciences SLC in New Dorp High School and therefore not in SPARK.
-
-```{r}
-non_hs_1<-read_excel("SPARK 2017 HN copy.xlsx", sheet = 9, col_names = FALSE)
-names(non_hs_1)<-c("StudentID", "Course", "Mark1")
-non_hs_1$Spark<-0
-non_hs_1$HS<-0
-```
 
 Here we combine the results from the first marking period with those of the second marking period.
 
 ```{r}
 first<-rbind(hs_spark_1, hs_nonspark_1)
-first<-rbind(first, non_hs_1)
+
 
 all_mp_2<-read_excel("SPARK MP2 Grades copy.xlsx", sheet = 1)
 names(all_mp_2)
@@ -104,8 +96,7 @@ names(three_and_four_again)<-c("StudentID", "Blank1", "Blank2",  "Course", "Blan
 total_hs<-total[total$HS==1,]
 total_hs$firsfour<-substr(total_hs$Course, 1, 4)
 total_hs$lastthree<-substr(total_hs$Course, 6, 8)
-total_hs$Course2<-paste(total_hs$firsfour, total_hs$lastthree, sep="2")
-total_hs$Course<-total_hs$Course2
+total_hs$Course<-paste(total_hs$firsfour, total_hs$lastthree, sep="2")
 total_hs
 nrow(total_hs)
 
@@ -123,6 +114,10 @@ is.numeric(Final$MP4)
 is.numeric(Final$MP3)
 is.numeric(Final$MP4)
 ```
+
+Next we run our regressions. The first regressions have the following format:
+
+\[ Δ_1= \]
 
 ```{r}
 Final$diff1<-as.numeric(as.character(Final$Mark2))-as.numeric(as.character(Final$Mark1))
@@ -215,5 +210,7 @@ summary(as.numeric(Final$Mark2)-as.numeric(Final$Mark1))
 
 mean(dropouts$diff)
 summary(Final$diff1)
+
+write.csv(Final, file = "Final_Spark.csv")
 
 ```
