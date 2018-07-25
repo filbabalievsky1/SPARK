@@ -20,6 +20,7 @@ install.packages("stargazer")
 install.packages("Rcurl")
 install.packages("readxl")
 library(tidyverse)
+library(dplyr)
 library(stargazer)
 library(RCurl)
 library(readxl)
@@ -98,17 +99,43 @@ Next we look at the data from marking periods 3 and 4 and try to merge them with
 ```{r}
 three_and_four<-read_excel("SPARK 2017 Term 2 MP3 and MP4 copy.xlsx", sheet = 2)
 three_and_four<-three_and_four[,-6]
+names(three_and_four)<-c("StudentID", "Blank1",  "Course", "Blank3", "Blank4", "Blank5", "MP3", "MP4", "Final")
 #three_and_four<-read_excel("SPARK 2017 Term 2 MP3 and MP4.xlsx", sheet = 1, col_names = TRUE)
 three_and_four
 max(three_and_four$StudentID)
-max(total$StudentID)
+max(total_hs$StudentID)
+min(total_hs$StudentID)
+min(three_and_four$StudentID)
 mean(as.numeric(three_and_four$MP4), na.rm=TRUE)-mean(as.numeric(three_and_four$MP3), na.rm=TRUE)
 
 ncol(three_and_four)
 nrow(three_and_four)
-names(three_and_four)<-c("StudentID", "Blank1",  "Course", "Blank3", "Blank4", "Blank5", "MP3", "MP4", "Final")
+
+colnames(three_and_four)
+colnames(total)
+
+is.character(three_and_four$Course)
+is.character(total$Course)
+
+is.numeric(three_and_four$StudentID)
+is.numeric(total$StudentID)
+
+total$paste<-paste(total$StudentID, total$Course)
 three_and_four
-total
+
+intermediatmerge(total_hs, three_and_four, all = TRUE)
+nrow(all)
+head(all)
+head(total_hs)
+head(three_and_four)
+all(unique(total$))
+
+Final<-merge(total_hs, three_and_four, by=c("StudentID", "Course"))
+length(three_and_four$Course)
+
+
+Final<-all[all$HS==1,]
+Final
 
 Final_All_Grades<-total_hs[total_hs$StudentID==three_and_four$StudentID,]
 Final_All_Grades<-total_hs[total_hs$StudentID %in% three_and_four$StudentID, ]
@@ -118,8 +145,62 @@ Final_All_Grades
 is.numeric(three_and_four$StudentID)
 is.numeric(total$StudentID)
 is.character(three_and_four$Course)
-is.character(total$Course)
+is.character(total_hs$Course)
 nrow(Final_All_Grades)
+
+total_hs<-total[total$HS==1,]
+total_hs$firsfour<-substr(total_hs$Course, 1, 4)
+total_hs$lastthree<-substr(total_hs$Course, 6, 8)
+total_hs$Course2<-paste(total_hs$firsfour, total_hs$lastthree, sep="2")
+total_hs$Course<-total_hs$Course2
+total_hs
+nrow(total_hs)
+three_and_four
+Final<-merge(total_hs, three_and_four, by=c("StudentID", "Course"))
+Final
+```
+
+```{r}
+total_hs$coursechar<-as.character(total_hs$Course)
+total_hs$Type<-substr(total_hs$coursechar, 1, 1)
+
+sorted<-sort(total_hs$StudentID)
+head(sorted)
+sorted
+
+sorted2<-sort(three_and_four$StudentID)
+sorted2
+head(sorted2)
+
+three_and_four$coursechar<-as.character(three_and_four$Course)
+three_and_four$Type<-substr(three_and_four$coursechar, 1, 1)
+
+onetwomath<-total_hs[total_hs$Type=="M",]
+threefourmath<-three_and_four[three_and_four$Type=="M",]
+onetwomath
+threefourmath
+Finalmath<-merge(onetwomath, threefourmath, by=c("StudentID"))
+Finalmath
+
+```
+
+
+```{r}
+three_and_four_again<-read_excel("SPARK 2017 Term 2 MP3 and MP4 copy.xlsx", sheet = 1)
+three_and_four_again
+names(three_and_four)<-c("StudentID", "Blank1", "Blank2",  "Course", "Blank3", "Blank4", "Blank5", "Blank6", "MP3", "MP4", "Final")
+
+total_hs<-total[total$HS==1,]
+total_hs$firsfour<-substr(total_hs$Course, 1, 4)
+total_hs$lastthree<-substr(total_hs$Course, 6, 8)
+total_hs$Course2<-paste(total_hs$firsfour, total_hs$lastthree, sep="2")
+total_hs$Course<-total_hs$Course2
+total_hs
+nrow(total_hs)
+
+Final<-merge(total_hs, three_and_four_again, by=c("StudentID", "Course"))
+Final
+nrow(Final)
 
 ```
 
