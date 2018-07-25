@@ -115,9 +115,15 @@ is.numeric(Final$MP3)
 is.numeric(Final$MP4)
 ```
 
-Next we run our regressions. The first regressions have the following format:
+Next we run our regressions. All our observations are at the student-subject level. The first regressions have the following format:
 
-\[ Δ_1= \]
+Δ=α+β×SPARK
+
+Here Δ is the difference in grades for a student-subject between marking period 1 and a subsequent marking period, α is a constant, and β is the coefficient on a dummy variable taking value 1 if and only if the student is in SPARK. Other regressions have the format:
+
+Δ=α+∑<sub>i</sub>(β×SPARK×Class)+∑(γ×Class)
+
+Here, γ is the coefficient on a specific subject--Math, English, or Science. A high value of γ for, say, math, tells us that student performance declined less in
 
 ```{r}
 Final$diff1<-as.numeric(as.character(Final$Mark2))-as.numeric(as.character(Final$Mark1))
@@ -193,10 +199,12 @@ summary(lm_ends)
 ```
 
 ```{r}
+
 plot(Final$Mark1)
 plot(Final$Mark2)
 plot(Final$MP3)
 plot(Final$MP4)
+
 ```
 
 Next we look at the kids who left our sample after Marking Period 2. Note that the SPARK students who dropped out of the sample had high MP1 grades, and an MP1 to MP2 drop that was not unusually great. We do not know why they left the sample.
