@@ -97,98 +97,9 @@ nrow(total_hs[total_hs$Spark==1,])
 Next we look at the data from marking periods 3 and 4 and try to merge them with the data from periods 1 and 2.
 
 ```{r}
-three_and_four<-read_excel("SPARK 2017 Term 2 MP3 and MP4 copy.xlsx", sheet = 2)
-three_and_four<-three_and_four[,-6]
-names(three_and_four)<-c("StudentID", "Blank1",  "Course", "Blank3", "Blank4", "Blank5", "MP3", "MP4", "Final")
-#three_and_four<-read_excel("SPARK 2017 Term 2 MP3 and MP4.xlsx", sheet = 1, col_names = TRUE)
-three_and_four
-max(three_and_four$StudentID)
-max(total_hs$StudentID)
-min(total_hs$StudentID)
-min(three_and_four$StudentID)
-mean(as.numeric(three_and_four$MP4), na.rm=TRUE)-mean(as.numeric(three_and_four$MP3), na.rm=TRUE)
-
-ncol(three_and_four)
-nrow(three_and_four)
-
-colnames(three_and_four)
-colnames(total)
-
-is.character(three_and_four$Course)
-is.character(total$Course)
-
-is.numeric(three_and_four$StudentID)
-is.numeric(total$StudentID)
-
-total$paste<-paste(total$StudentID, total$Course)
-three_and_four
-
-intermediatmerge(total_hs, three_and_four, all = TRUE)
-nrow(all)
-head(all)
-head(total_hs)
-head(three_and_four)
-all(unique(total$))
-
-Final<-merge(total_hs, three_and_four, by=c("StudentID", "Course"))
-length(three_and_four$Course)
-
-
-Final<-all[all$HS==1,]
-Final
-
-Final_All_Grades<-total_hs[total_hs$StudentID==three_and_four$StudentID,]
-Final_All_Grades<-total_hs[total_hs$StudentID %in% three_and_four$StudentID, ]
-
-#Final_All_Grades<-merge(total, three_and_four, by=c("StudentID", "Course"))
-Final_All_Grades
-is.numeric(three_and_four$StudentID)
-is.numeric(total$StudentID)
-is.character(three_and_four$Course)
-is.character(total_hs$Course)
-nrow(Final_All_Grades)
-
-total_hs<-total[total$HS==1,]
-total_hs$firsfour<-substr(total_hs$Course, 1, 4)
-total_hs$lastthree<-substr(total_hs$Course, 6, 8)
-total_hs$Course2<-paste(total_hs$firsfour, total_hs$lastthree, sep="2")
-total_hs$Course<-total_hs$Course2
-total_hs
-nrow(total_hs)
-three_and_four
-Final<-merge(total_hs, three_and_four, by=c("StudentID", "Course"))
-Final
-```
-
-```{r}
-total_hs$coursechar<-as.character(total_hs$Course)
-total_hs$Type<-substr(total_hs$coursechar, 1, 1)
-
-sorted<-sort(total_hs$StudentID)
-head(sorted)
-sorted
-
-sorted2<-sort(three_and_four$StudentID)
-sorted2
-head(sorted2)
-
-three_and_four$coursechar<-as.character(three_and_four$Course)
-three_and_four$Type<-substr(three_and_four$coursechar, 1, 1)
-
-onetwomath<-total_hs[total_hs$Type=="M",]
-threefourmath<-three_and_four[three_and_four$Type=="M",]
-onetwomath
-threefourmath
-Finalmath<-merge(onetwomath, threefourmath, by=c("StudentID"))
-Finalmath
-
-```
-
-
-```{r}
 three_and_four_again<-read_excel("SPARK 2017 Term 2 MP3 and MP4 copy.xlsx", sheet = 1)
 three_and_four_again
-names(three_and_four)<-c("StudentID", "Blank1", "Blank2",  "Course", "Blank3", "Blank4", "Blank5", "Blank6", "MP3", "MP4", "Final")
+names(three_and_four_again)<-c("StudentID", "Blank1", "Blank2",  "Course", "Blank3", "Blank4", "Blank5", "Blank6", "MP3", "MP4", "Final")
 
 total_hs<-total[total$HS==1,]
 total_hs$firsfour<-substr(total_hs$Course, 1, 4)
@@ -198,64 +109,111 @@ total_hs$Course<-total_hs$Course2
 total_hs
 nrow(total_hs)
 
-Final<-merge(total_hs, three_and_four_again, by=c("StudentID", "Course"))
+Final<-left_join(total_hs, three_and_four_again, by=c("StudentID", "Course"))
 Final
 nrow(Final)
+nrow(Final[Final$Spark==0,])
+nrow(Final[Final$Spark==1,])
 
+Final$Final <- NULL
+Final
+
+is.numeric(Final$Mark1)
+is.numeric(Final$MP4)
+is.numeric(Final$MP3)
+is.numeric(Final$MP4)
 ```
 
-
 ```{r}
+Final$diff1<-as.numeric(as.character(Final$Mark2))-as.numeric(as.character(Final$Mark1))
+Final$diff2<-as.numeric(as.character(Final$MP3))-as.numeric(as.character(Final$Mark1))
+Final$diff3<-as.numeric(as.character(Final$MP4))-as.numeric(as.character(Final$Mark1))
 
-total_hs$mp1<-as.numeric(as.character(total_hs$Mark1))
-mean(total_hs$diff)
 
-summary(total_hs$diff)
+summary(Final$diff1)
 
-lm1<-lm(diff~Spark,data=total_hs)
+lm1<-lm(diff1~Spark,data=Final)
 summary(lm1)
 summary(lm1, cluster=c("StudentID"))
 
-lm1a<-lm(mp1~Spark,data=total_hs)
-summary(lm1a)
-summary(lm1a, cluster=c("StudentID"))
-
-total_hs$coursechar<-as.character(total_hs$Course)
-total_hs$Type<-substr(total_hs$coursechar, 1, 1)
-
-
-total_hs$Spark_math<-0
-total_hs$Spark_math[total_hs$Spark==1&total_hs$Type=="M"]<-1
-
-total_hs$Spark_sci<-0
-total_hs$Spark_sci[total_hs$Spark==1&total_hs$Type=="S"]<-1
-
-total_hs$Spark_eng<-0
-total_hs$Spark_eng[total_hs$Spark==1&total_hs$Type=="E"]<-1
-
-
-
-total_hs$math<-0
-total_hs$math[total_hs$Type=="M"]<-1
-
-total_hs$sci<-0
-total_hs$sci[total_hs$Type=="S"]<-1
-
-total_hs$eng<-0
-total_hs$eng[total_hs$Type=="E"]<-1
-
-
-
-lm2<-lm(diff~Spark_math+Spark_sci+Spark_eng+math+eng,data=total_hs)
+lm2<-lm(diff2~Spark,data=Final)
 summary(lm2)
-summary(lm2, cluster=c("StudentID"))
 
-lm2a<-lm(mp1~Spark_math+Spark_sci+Spark_eng+math+eng,data=total_hs)
-summary(lm2a)
-summary(lm2a, cluster=c("StudentID"))
+lm3<-lm(diff3~Spark,data=Final)
+summary(lm3)
 
-write.csv(total_hs, file = "totalhs.csv")
 
-levels(total_hs$Course)
+Final$coursechar<-as.character(Final$Course)
+Final$Type<-substr(Final$coursechar, 1, 1)
+
+
+Final$Spark_math<-0
+Final$Spark_math[Final$Spark==1&Final$Type=="M"]<-1
+
+Final$Spark_sci<-0
+Final$Spark_sci[Final$Spark==1&Final$Type=="S"]<-1
+
+Final$Spark_eng<-0
+Final$Spark_eng[Final$Spark==1&Final$Type=="E"]<-1
+
+Final$math<-0
+Final$math[Final$Type=="M"]<-1
+
+Final$sci<-0
+Final$sci[Final$Type=="S"]<-1
+
+Final$eng<-0
+Final$eng[Final$Type=="E"]<-1
+
+
+lm1_subj<-lm(diff1~Spark_math+Spark_sci+Spark_eng+math+eng,data=Final)
+summary(lm1_subj)
+summary(lm1_subj, cluster=c("StudentID"))
+
+lm2_subj<-lm(diff2~Spark_math+Spark_sci+Spark_eng+math+eng,data=Final)
+summary(lm2_subj)
+summary(lm2_subj, cluster=c("StudentID"))
+
+lm3_subj<-lm(diff3~Spark_math+Spark_sci+Spark_eng+math+eng,data=Final)
+summary(lm3_subj)
+summary(lm3_subj, cluster=c("StudentID"))
+```
+
+
+
+
+```{r}
+
+Final$diff_intermediate1<-as.numeric(as.character(Final$MP3))-as.numeric(as.character(Final$Mark2))
+lm_intermediate1<-lm(diff_intermediate1~Spark_math+Spark_sci+Spark_eng+math+eng,data=Final)
+summary(lm_intermediate1)
+
+Final$diff_intermediate2<-as.numeric(as.character(Final$MP4))-as.numeric(as.character(Final$MP3))
+lm_intermediate2<-lm(diff_intermediate2~Spark_math+Spark_sci+Spark_eng+math+eng,data=Final)
+summary(lm_intermediate2)
+
+Final$diff_ends<-as.numeric(as.character(Final$MP4))-as.numeric(as.character(Final$Mark2))
+lm_ends<-lm(diff_ends~Spark_math+Spark_sci+Spark_eng+math+eng,data=Final)
+summary(lm_ends)
+```
+
+```{r}
+plot(Final$Mark1)
+plot(Final$Mark2)
+plot(Final$MP3)
+plot(Final$MP4)
+```
+
+Next we look at the kids who left our sample after Marking Period 2. Note that the SPARK students who dropped out of the sample had high MP1 grades, and an MP1 to MP2 drop that was not unusually great. We do not know why they left the sample.
+
+```{r}
+dropouts <- Final[which(is.na(Final$MP4)),]
+dropouts
+as.numeric(dropouts$Mark2)-as.numeric(dropouts$Mark1)
+summary(as.numeric(dropouts$Mark2)-as.numeric(dropouts$Mark1))
+summary(as.numeric(Final$Mark2)-as.numeric(Final$Mark1))
+
+mean(dropouts$diff)
+summary(Final$diff1)
 
 ```
