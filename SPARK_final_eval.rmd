@@ -115,15 +115,15 @@ is.numeric(Final$MP3)
 is.numeric(Final$MP4)
 ```
 
-Next we run our regressions. All our observations are at the student-subject level. The first regressions have the following format:
+Next we run our regressions. All our observations are at the student-subject level. The first three regressions have the following format:
 
 Δ=α+β×SPARK
 
-Here Δ is the difference in grades for a student-subject between marking period 1 and a subsequent marking period, α is a constant, and β is the coefficient on a dummy variable taking value 1 if and only if the student is in SPARK. Other regressions have the format:
+Here Δ is the difference in grades for a student-subject between marking period 1 and a subsequent marking period, α is a constant, and β is the coefficient on a dummy variable taking value 1 if and only if the student is in SPARK. The next three regressions have the format:
 
-Δ=α+∑<sub>i</sub>(β×SPARK×Class)+∑(γ×Class)
+Δ=α+∑<sub>i</sub>(β<sub>i</sub>×SPARK×Class<sub>i</sub>)+∑<sub>i</sub>(γ<sub>i</sub>×Class<sub>i</sub>)
 
-Here, γ is the coefficient on a specific subject--Math, English, or Science. A high value of γ for, say, math, tells us that student performance declined less in
+Here, γ is the coefficient on a specific subject--Math, English, or Science. A high value for, say γ<sub>m</sub>, the coefficient on math, tells us that student performance declined less in math than in the "default" subject (here chosen as science.) A high value for β<sub>m</sub> would therefore imply that students in SPARK saw even smaller decreases in math performance than non-SPARK students.
 
 ```{r}
 Final$diff1<-as.numeric(as.character(Final$Mark2))-as.numeric(as.character(Final$Mark1))
@@ -180,6 +180,11 @@ summary(lm3_subj)
 summary(lm3_subj, cluster=c("StudentID"))
 ```
 
+We next run three regressions, again with subject dummies, but this time we compare performance between:
+
+* Marking period 2 and 3
+* Marking period 3 and 4
+* Marking period 2 and 4
 
 
 
