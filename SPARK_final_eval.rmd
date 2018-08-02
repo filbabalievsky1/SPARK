@@ -32,7 +32,14 @@ library(anonymizer)
 
 ```
 
-
+Next we import a function for clustered standard errors.
+```{r}
+# import the function from repository
+# thanks https://economictheoryblog.com/2016/12/13/clustered-standard-errors-in-r/
+url_robust <- "https://raw.githubusercontent.com/IsidoreBeautrelet/economictheoryblog/master/robust_summary.R"
+eval(parse(text = getURL(url_robust, ssl.verifypeer = FALSE)),
+     envir=.GlobalEnv)
+```
 
 # The Data
 
@@ -227,7 +234,7 @@ Next we look at the kids who left our sample after Marking Period 2. Note that t
 ```{r}
 dropouts <- Final[which(is.na(Final$MP4)),]
 dropouts$anonID<-anonymize(dropouts$StudentID, .n_chars = 5, .algo = "crc32")
-myvars<-c("anonID", "Mark1", "Mark2", "MP3", "MP4")
+myvars<-c("anonID", "Mark1", "Mark2", "MP3", "MP4", "Spark")
 
 dropouts_anon<-dropouts[myvars]
 dropouts_anon
@@ -238,21 +245,11 @@ summary(as.numeric(Final$Mark2)-as.numeric(Final$Mark1))
 
 mean(dropouts$diff)
 
-third_missing <- Final[which(is.na(Final$MP3)),]
-third_missing
 
 
-any_missing <- Final[is.na(Final$MP3) | is.na(Final$MP4) | is.na(Final$Mark1) | is.na(Final$Mark2),]
-cid <- unique(Final$Course)
-cid<- 1:length(unique(Final$Course))
-cid
-myvars<-c("Course", "Spark", "Mark1", "Mark2", "MP3", "MP4")
-any_missing2<-any_missing[,myvars]
-any_missing2
 
-x<-Final[Final$StudentID=="226514768",]
-x
-summary(Final$diff1)
+
+
 
 write.csv(Final, file = "Final_Spark.csv")
 
