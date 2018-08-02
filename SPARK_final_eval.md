@@ -18,7 +18,9 @@ knitr::opts_knit$set(root.dir = "~/Dropbox/New SI Stuff/SPARK Eval")
 #install.packages("tidyverse")
 #install.packages("stargazer")
 #install.packages("Rcurl")
+#install.packages("dplyr")
 #install.packages("readxl")
+#install.packages("anonymizer")
 library(tidyverse)
 ```
 
@@ -60,16 +62,7 @@ library(RCurl)
 
 ``` r
 library(readxl)
-```
-
-Next we import a function for clustered standard errors.
-
-``` r
-# import the function from repository
-# thanks https://economictheoryblog.com/2016/12/13/clustered-standard-errors-in-r/
-url_robust <- "https://raw.githubusercontent.com/IsidoreBeautrelet/economictheoryblog/master/robust_summary.R"
-eval(parse(text = getURL(url_robust, ssl.verifypeer = FALSE)),
-     envir=.GlobalEnv)
+library(anonymizer)
 ```
 
 The Data
@@ -78,7 +71,8 @@ The Data
 First we import data for the ninth graders in the Health Sciences SLC in New Dorp High who are enrolled in SPARK. Note that there are 57 students in SPARK and 37 students in New Dorp's 9th grade class not in SPARK. The seventh tab of the Excel file holds data for SPARK students in their first marking periods in English, math, and science. There are 171 observations, 3 classes times 51 students.
 
 ``` r
-hs_spark_1<-read_excel("SPARK 2017 HN copy.xlsx", sheet = 7, col_names = FALSE)
+setwd("~/Dropbox/New SI Stuff/SPARK Eval")
+hs_spark_1<-read_excel("~/Dropbox/New SI Stuff/SPARK Eval/SPARK 2017 HN copy.xlsx", sheet = 7, col_names = FALSE)
 ```
 
     ## Warning in strptime(x, format, tz = tz): unknown timezone 'default/America/
@@ -128,8 +122,6 @@ names(all_mp_2)
 
 ``` r
 names(all_mp_2)<-c("StudentID", "Course", "Mark2")
-
-#total<-merge(first, all_mp_2, by=c("StudentID", "Course"))
 total<-left_join(first, all_mp_2, by=c("StudentID", "Course"))
 
 total$diff<-as.numeric(as.character(total$Mark2))-as.numeric(as.character(total$Mark1))
@@ -139,6 +131,7 @@ total$diff<-as.numeric(as.character(total$Mark2))-as.numeric(as.character(total$
 
 ``` r
 total_hs<-total[total$HS==1,]
+
 nrow(total_hs[total_hs$Spark==0,])
 ```
 
@@ -283,14 +276,16 @@ summary(lm1, cluster=c("StudentID"))
     ## -25.0059  -4.0059   0.3846   3.9941  26.9941 
     ## 
     ## Coefficients:
-    ##             Estimate Std. Error t value Pr(>|t|)
-    ## (Intercept)   -6.385         NA      NA       NA
-    ## Spark          2.391         NA      NA       NA
+    ##             Estimate Std. Error t value Pr(>|t|)    
+    ## (Intercept)  -6.3846     0.7333  -8.707 3.13e-16 ***
+    ## Spark         2.3905     0.9320   2.565   0.0109 *  
+    ## ---
+    ## Signif. codes:  0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1
     ## 
     ## Residual standard error: 7.478 on 271 degrees of freedom
     ##   (9 observations deleted due to missingness)
     ## Multiple R-squared:  0.0237, Adjusted R-squared:  0.0201 
-    ## F-statistic:   NaN on 1 and 0 DF,  p-value: NA
+    ## F-statistic: 6.579 on 1 and 271 DF,  p-value: 0.01086
 
 ``` r
 lm2<-lm(diff2~Spark,data=Final)
@@ -409,18 +404,20 @@ summary(lm1_subj, cluster=c("StudentID"))
     ## -24.6429  -3.8214   0.1786   3.7059  25.4737 
     ## 
     ## Coefficients:
-    ##             Estimate Std. Error t value Pr(>|t|)
-    ## (Intercept)  -8.0857         NA      NA       NA
-    ## Spark_math    3.2322         NA      NA       NA
-    ## Spark_sci     2.9071         NA      NA       NA
-    ## Spark_eng     0.9857         NA      NA       NA
-    ## math          2.3798         NA      NA       NA
-    ## eng           2.7429         NA      NA       NA
+    ##             Estimate Std. Error t value Pr(>|t|)    
+    ## (Intercept)  -8.0857     1.2577  -6.429  5.9e-10 ***
+    ## Spark_math    3.2322     1.6124   2.005   0.0460 *  
+    ## Spark_sci     2.9071     1.6033   1.813   0.0709 .  
+    ## Spark_eng     0.9857     1.6033   0.615   0.5392    
+    ## math          2.3798     1.7917   1.328   0.1852    
+    ## eng           2.7429     1.7787   1.542   0.1242    
+    ## ---
+    ## Signif. codes:  0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1
     ## 
     ## Residual standard error: 7.441 on 267 degrees of freedom
     ##   (9 observations deleted due to missingness)
     ## Multiple R-squared:  0.04771,    Adjusted R-squared:  0.02987 
-    ## F-statistic:   NaN on 5 and 0 DF,  p-value: NA
+    ## F-statistic: 2.675 on 5 and 267 DF,  p-value: 0.02224
 
 ``` r
 lm2_subj<-lm(diff2~Spark_math+Spark_sci+Spark_eng+math+eng,data=Final)
@@ -466,18 +463,20 @@ summary(lm2_subj, cluster=c("StudentID"))
     ## -38.396  -5.396   0.333   5.252  23.604 
     ## 
     ## Coefficients:
-    ##             Estimate Std. Error t value Pr(>|t|)
-    ## (Intercept)  -3.3714         NA      NA       NA
-    ## Spark_math    0.2778         NA      NA       NA
-    ## Spark_sci     0.2394         NA      NA       NA
-    ## Spark_eng     1.3962         NA      NA       NA
-    ## math         -8.9619         NA      NA       NA
-    ## eng          -7.6286         NA      NA       NA
+    ##             Estimate Std. Error t value Pr(>|t|)    
+    ## (Intercept)  -3.3714     1.5492  -2.176 0.030452 *  
+    ## Spark_math    0.2778     2.0251   0.137 0.891008    
+    ## Spark_sci     0.2394     1.9963   0.120 0.904656    
+    ## Spark_eng     1.3962     1.9963   0.699 0.484924    
+    ## math         -8.9619     2.2239  -4.030 7.36e-05 ***
+    ## eng          -7.6286     2.1909  -3.482 0.000585 ***
+    ## ---
+    ## Signif. codes:  0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1
     ## 
     ## Residual standard error: 9.165 on 257 degrees of freedom
     ##   (19 observations deleted due to missingness)
     ## Multiple R-squared:  0.153,  Adjusted R-squared:  0.1365 
-    ## F-statistic:   NaN on 5 and 0 DF,  p-value: NA
+    ## F-statistic: 9.282 on 5 and 257 DF,  p-value: 3.854e-08
 
 ``` r
 lm3_subj<-lm(diff3~Spark_math+Spark_sci+Spark_eng+math+eng,data=Final)
@@ -523,18 +522,20 @@ summary(lm3_subj, cluster=c("StudentID"))
     ## -32.113  -4.560  -0.463   4.368  25.887 
     ## 
     ## Coefficients:
-    ##             Estimate Std. Error t value Pr(>|t|)
-    ## (Intercept) -3.42857         NA      NA       NA
-    ## Spark_math   2.85690         NA      NA       NA
-    ## Spark_sci    0.08895         NA      NA       NA
-    ## Spark_eng    1.45606         NA      NA       NA
-    ## math        -3.96537         NA      NA       NA
-    ## eng         -3.91429         NA      NA       NA
+    ##             Estimate Std. Error t value Pr(>|t|)   
+    ## (Intercept) -3.42857    1.30296  -2.631  0.00902 **
+    ## Spark_math   2.85690    1.70323   1.677  0.09469 . 
+    ## Spark_sci    0.08895    1.67894   0.053  0.95779   
+    ## Spark_eng    1.45606    1.67894   0.867  0.38661   
+    ## math        -3.96537    1.87038  -2.120  0.03496 * 
+    ## eng         -3.91429    1.84267  -2.124  0.03460 * 
+    ## ---
+    ## Signif. codes:  0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1
     ## 
     ## Residual standard error: 7.708 on 257 degrees of freedom
     ##   (19 observations deleted due to missingness)
     ## Multiple R-squared:  0.04149,    Adjusted R-squared:  0.02284 
-    ## F-statistic:   NaN on 5 and 0 DF,  p-value: NA
+    ## F-statistic: 2.225 on 5 and 257 DF,  p-value: 0.05233
 
 We next run three regressions, again with subject dummies, but this time we compare performance between:
 
@@ -641,57 +642,76 @@ plot(Final$Mark1)
 
     ## Warning in xy.coords(x, y, xlabel, ylabel, log): NAs introduced by coercion
 
-![](SPARK_final_eval_files/figure-markdown_github/unnamed-chunk-9-1.png)
+![](SPARK_final_eval_files/figure-markdown_github/unnamed-chunk-8-1.png)
 
 ``` r
 plot(Final$Mark2)
 ```
 
-![](SPARK_final_eval_files/figure-markdown_github/unnamed-chunk-9-2.png)
+![](SPARK_final_eval_files/figure-markdown_github/unnamed-chunk-8-2.png)
 
 ``` r
 plot(Final$MP3)
 ```
 
-![](SPARK_final_eval_files/figure-markdown_github/unnamed-chunk-9-3.png)
+![](SPARK_final_eval_files/figure-markdown_github/unnamed-chunk-8-3.png)
 
 ``` r
 plot(Final$MP4)
 ```
 
-![](SPARK_final_eval_files/figure-markdown_github/unnamed-chunk-9-4.png)
+![](SPARK_final_eval_files/figure-markdown_github/unnamed-chunk-8-4.png) Next, we note that a small number of kids are in a more advanced math course. The first letter of the course identifier indicates the broad subject, whereas the second indicates the specific course. A second letter "E" indicates algebra 1, whereas a second letter "G" indicates a more advanced geometry course. We add dummies for this higher level math course and for its interaction with SPARK. Nothing important changes.
+
+The number of students in a different science level was tiny, so we do not bother cutting up the sample along that dimension.
+
+All students were at the same level of English.
+
+``` r
+Final$Type2<-substr(Final$coursechar, 1, 2)
+
+
+Final$adv_math<-0
+Final$adv_math[Final$Type2=="MG"]<-1
+Final$Spark_adv_math<-0
+Final$Spark_adv_math[Final$Spark==1&Final$Type2=="MG"]<-1
+
+lm3_subj_adv<-lm(diff3~Spark_math+Spark_sci+Spark_eng+math+eng+adv_math+Spark_adv_math,data=Final)
+summary(lm3_subj_adv)
+```
+
+    ## 
+    ## Call:
+    ## lm(formula = diff3 ~ Spark_math + Spark_sci + Spark_eng + math + 
+    ##     eng + adv_math + Spark_adv_math, data = Final)
+    ## 
+    ## Residuals:
+    ##     Min      1Q  Median      3Q     Max 
+    ## -32.113  -4.524  -0.113   4.343  25.887 
+    ## 
+    ## Coefficients:
+    ##                Estimate Std. Error t value Pr(>|t|)   
+    ## (Intercept)    -3.42857    1.30788  -2.621  0.00928 **
+    ## Spark_math      2.73505    1.78113   1.536  0.12588   
+    ## Spark_sci       0.08895    1.68528   0.053  0.95795   
+    ## Spark_eng       1.45606    1.68528   0.864  0.38841   
+    ## math           -3.91518    1.89248  -2.069  0.03957 * 
+    ## eng            -3.91429    1.84962  -2.116  0.03529 * 
+    ## adv_math       -1.65625    7.85751  -0.211  0.83322   
+    ## Spark_adv_math  2.13995    8.39795   0.255  0.79907   
+    ## ---
+    ## Signif. codes:  0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1
+    ## 
+    ## Residual standard error: 7.738 on 255 degrees of freedom
+    ##   (19 observations deleted due to missingness)
+    ## Multiple R-squared:  0.04175,    Adjusted R-squared:  0.01545 
+    ## F-statistic: 1.587 on 7 and 255 DF,  p-value: 0.1394
 
 Next we look at the kids who left our sample after Marking Period 2. Note that the SPARK students who dropped out of the sample had high MP1 grades, and an MP1 to MP2 drop that was not unusually great. We do not know why they left the sample.
 
 ``` r
 dropouts <- Final[which(is.na(Final$MP4)),]
-dropouts
-```
-
-    ## # A tibble: 13 x 31
-    ##    StudentID Course   Mark1 Spark    HS Mark2  diff firsfour lastthree
-    ##        <dbl> <chr>    <chr> <dbl> <dbl> <chr> <dbl> <chr>    <chr>    
-    ##  1 209232552 EES82QQN 84        1     1 80       -4 EES8     QQN      
-    ##  2 209232552 MES22QQN 80        1     1 70      -10 MES2     QQN      
-    ##  3 209232552 SLS22QQN 85        1     1 83       -2 SLS2     QQN      
-    ##  4 214937344 EES82QQN 89        1     1 80       -9 EES8     QQN      
-    ##  5 214937344 MES22QQN 85        1     1 87        2 MES2     QQN      
-    ##  6 214937344 SLS22QQN 88        1     1 85       -3 SLS2     QQN      
-    ##  7 215877192 EES82QQN 99        1     1 94       -5 EES8     QQN      
-    ##  8 215877192 MES22QQN 98        1     1 97       -1 MES2     QQN      
-    ##  9 215877192 SLS22QQN 93        1     1 88       -5 SLS2     QQN      
-    ## 10 226514768 MES22QQN 65        0     1 65        0 MES2     QQN      
-    ## 11 242223808 EES82QQN 99        0     1 <NA>     NA EES8     QQN      
-    ## 12 242223808 MES22QQN 99        0     1 <NA>     NA MES2     QQN      
-    ## 13 242223808 SLS22QQN 97        0     1 <NA>     NA SLS2     QQN      
-    ## # ... with 22 more variables: Blank1 <chr>, Blank2 <dbl>, Blank3 <dbl>,
-    ## #   Blank4 <dbl>, Blank5 <chr>, Blank6 <chr>, MP3 <chr>, MP4 <chr>,
-    ## #   diff1 <dbl>, diff2 <dbl>, diff3 <dbl>, coursechar <chr>, Type <chr>,
-    ## #   Spark_math <dbl>, Spark_sci <dbl>, Spark_eng <dbl>, math <dbl>,
-    ## #   sci <dbl>, eng <dbl>, diff_intermediate1 <dbl>,
-    ## #   diff_intermediate2 <dbl>, diff_ends <dbl>
-
-``` r
+dropouts$anonID<-anonymize(dropouts$StudentID, .n_chars = 5, .algo = "crc32")
+  
 as.numeric(dropouts$Mark2)-as.numeric(dropouts$Mark1)
 ```
 
@@ -721,22 +741,84 @@ mean(dropouts$diff)
     ## [1] NA
 
 ``` r
+third_missing <- Final[which(is.na(Final$MP3)),]
+third_missing
+```
+
+    ## # A tibble: 13 x 34
+    ##    StudentID Course   Mark1 Spark    HS Mark2  diff firsfour lastthree
+    ##        <dbl> <chr>    <chr> <dbl> <dbl> <chr> <dbl> <chr>    <chr>    
+    ##  1 209232552 EES82QQN 84        1     1 80       -4 EES8     QQN      
+    ##  2 209232552 MES22QQN 80        1     1 70      -10 MES2     QQN      
+    ##  3 209232552 SLS22QQN 85        1     1 83       -2 SLS2     QQN      
+    ##  4 214937344 EES82QQN 89        1     1 80       -9 EES8     QQN      
+    ##  5 214937344 MES22QQN 85        1     1 87        2 MES2     QQN      
+    ##  6 214937344 SLS22QQN 88        1     1 85       -3 SLS2     QQN      
+    ##  7 215877192 EES82QQN 99        1     1 94       -5 EES8     QQN      
+    ##  8 215877192 MES22QQN 98        1     1 97       -1 MES2     QQN      
+    ##  9 215877192 SLS22QQN 93        1     1 88       -5 SLS2     QQN      
+    ## 10 226514768 MES22QQN 65        0     1 65        0 MES2     QQN      
+    ## 11 242223808 EES82QQN 99        0     1 <NA>     NA EES8     QQN      
+    ## 12 242223808 MES22QQN 99        0     1 <NA>     NA MES2     QQN      
+    ## 13 242223808 SLS22QQN 97        0     1 <NA>     NA SLS2     QQN      
+    ## # ... with 25 more variables: Blank1 <chr>, Blank2 <dbl>, Blank3 <dbl>,
+    ## #   Blank4 <dbl>, Blank5 <chr>, Blank6 <chr>, MP3 <chr>, MP4 <chr>,
+    ## #   diff1 <dbl>, diff2 <dbl>, diff3 <dbl>, coursechar <chr>, Type <chr>,
+    ## #   Spark_math <dbl>, Spark_sci <dbl>, Spark_eng <dbl>, math <dbl>,
+    ## #   sci <dbl>, eng <dbl>, diff_intermediate1 <dbl>,
+    ## #   diff_intermediate2 <dbl>, diff_ends <dbl>, Type2 <chr>,
+    ## #   adv_math <dbl>, Spark_adv_math <dbl>
+
+``` r
+any_missing <- Final[is.na(Final$MP3) | is.na(Final$MP4) | is.na(Final$Mark1) | is.na(Final$Mark2),]
+cid <- unique(Final$Course)
+cid<- 1:length(unique(Final$Course))
+cid
+```
+
+    ##  [1]  1  2  3  4  5  6  7  8  9 10 11 12 13 14
+
+``` r
+myvars<-c("Course", "Spark", "Mark1", "Mark2", "MP3", "MP4")
+any_missing2<-any_missing[,myvars]
+any_missing2
+```
+
+    ## # A tibble: 13 x 6
+    ##    Course   Spark Mark1 Mark2 MP3   MP4  
+    ##    <chr>    <dbl> <chr> <chr> <chr> <chr>
+    ##  1 EES82QQN     1 84    80    <NA>  <NA> 
+    ##  2 MES22QQN     1 80    70    <NA>  <NA> 
+    ##  3 SLS22QQN     1 85    83    <NA>  <NA> 
+    ##  4 EES82QQN     1 89    80    <NA>  <NA> 
+    ##  5 MES22QQN     1 85    87    <NA>  <NA> 
+    ##  6 SLS22QQN     1 88    85    <NA>  <NA> 
+    ##  7 EES82QQN     1 99    94    <NA>  <NA> 
+    ##  8 MES22QQN     1 98    97    <NA>  <NA> 
+    ##  9 SLS22QQN     1 93    88    <NA>  <NA> 
+    ## 10 MES22QQN     0 65    65    <NA>  <NA> 
+    ## 11 EES82QQN     0 99    <NA>  <NA>  <NA> 
+    ## 12 MES22QQN     0 99    <NA>  <NA>  <NA> 
+    ## 13 SLS22QQN     0 97    <NA>  <NA>  <NA>
+
+``` r
 x<-Final[Final$StudentID=="226514768",]
 x
 ```
 
-    ## # A tibble: 3 x 31
+    ## # A tibble: 3 x 34
     ##   StudentID Course Mark1 Spark    HS Mark2  diff firsfour lastthree Blank1
     ##       <dbl> <chr>  <chr> <dbl> <dbl> <chr> <dbl> <chr>    <chr>     <chr> 
     ## 1 226514768 EES82… 88        0     1 82       -6 EES8     QQN       1KN   
     ## 2 226514768 MES22… 65        0     1 65        0 MES2     QQN       <NA>  
     ## 3 226514768 SLS22… 84        0     1 80       -4 SLS2     QQN       1KN   
-    ## # ... with 21 more variables: Blank2 <dbl>, Blank3 <dbl>, Blank4 <dbl>,
+    ## # ... with 24 more variables: Blank2 <dbl>, Blank3 <dbl>, Blank4 <dbl>,
     ## #   Blank5 <chr>, Blank6 <chr>, MP3 <chr>, MP4 <chr>, diff1 <dbl>,
     ## #   diff2 <dbl>, diff3 <dbl>, coursechar <chr>, Type <chr>,
     ## #   Spark_math <dbl>, Spark_sci <dbl>, Spark_eng <dbl>, math <dbl>,
     ## #   sci <dbl>, eng <dbl>, diff_intermediate1 <dbl>,
-    ## #   diff_intermediate2 <dbl>, diff_ends <dbl>
+    ## #   diff_intermediate2 <dbl>, diff_ends <dbl>, Type2 <chr>,
+    ## #   adv_math <dbl>, Spark_adv_math <dbl>
 
 ``` r
 summary(Final$diff1)

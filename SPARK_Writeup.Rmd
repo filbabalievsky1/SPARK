@@ -1,0 +1,54 @@
+---
+title: "Spark Evaluation"
+author: "Fil Babalievsky and Atishay Sehgal"
+date: "8/1/2018"
+output: pdf_document
+abstract: This document 
+---
+
+```{r, echo=FALSE}
+setwd("~/Dropbox/New SI Stuff/SPARK Eval")
+Final<-read.csv("Final_SPARK.csv")
+
+```
+
+SPARK
+
+# Introduction: 
+
+The Staten Island Borough President’s office has conducted a preliminary investigation into the effects of aerobic exercise on academic achievement, in consultation with Dr. John Ratey. This program was inspired by and named for his book “SPARK”, an investigation of the benefits of exercise. 
+
+# Program details:
+
+One of Staten Island’s public schools agreed to serve as a small scale pilot for SPARK. They took a group of just under one hundred ninth graders and, starting in the second quarter of the school year, divided them into two groups. The students in two physical education classes, comprising two thirds of the group, augmented their standard sports-based curriculum with intense cardio exercise. At the start of the program, this meant seven minutes of intense work on treadmills, eventually expanded to twenty. Observers reported that, even in the early phase of the program, students were visibly exhausted. Note that both groups of students had the same physical education curriculum in the first quarter, providing a useful baseline. 
+
+The students were not exactly randomized, but rather were split based on convenience. Two gym classes were arbitrarily chosen and the third was left out as a control, but the school officials who separated the students did not do so based on any systematic difference between the students. 
+
+
+# Research Design and Data:
+
+We were given data on student performance in math, English, and science classes, with one average score per quarter. Our main specification consists of a differences in differences approach. The first quarter, when all students had the same gym curriculum, provides a baseline for comparison. We test if student academic growth differed between treatment and control over the remaining marking periods. 
+
+Our first research design compares the difference in grades between the first and subsequent marking periods for SPARK and non SPARK students, without controls for type of class. We run three regressions in this format, with the three dependent variables being the change in grades between the first marking period and the three subsequent marking periods.
+
+Our second research design considers the possibility that SPARK might have had different effects on different subjects. We therefore add controls for the type of subject and replace the SPARK dummy variable with an interaction term between SPARK and each of the three types of classes. 
+
+# Results:
+
+See the regression tables in the back for details.
+
+The point estimates for math were generally higher than the point estimates for the other subjects, and were more often significant. The greater responsiveness of math scores is in line with much of the rest of the literature (see Zivin 2018 or the discussion in Fryer 2016).
+
+All of the point estimates were positive, and a handful were significant. The largest effect size was a roughly one-third grade level difference in math from quarter one to quarter two. That is, students in the treatment group saw a change in grades that was one third of a grade level higher from marking period to marking period than the control. 
+
+
+
+
+# Appendix
+
+# Regression Results
+
+
+
+
+

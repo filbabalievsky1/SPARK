@@ -22,23 +22,17 @@ knitr::opts_knit$set(root.dir = "~/Dropbox/New SI Stuff/SPARK Eval")
 #install.packages("Rcurl")
 #install.packages("dplyr")
 #install.packages("readxl")
+#install.packages("anonymizer")
 library(tidyverse)
 library(dplyr)
 library(stargazer)
 library(RCurl)
 library(readxl)
+library(anonymizer)
 
 ```
 
-Next we import a function for clustered standard errors.
 
-```{r}
-# import the function from repository
-# thanks https://economictheoryblog.com/2016/12/13/clustered-standard-errors-in-r/
-url_robust <- "https://raw.githubusercontent.com/IsidoreBeautrelet/economictheoryblog/master/robust_summary.R"
-eval(parse(text = getURL(url_robust, ssl.verifypeer = FALSE)),
-     envir=.GlobalEnv)
-```
 
 # The Data
 
@@ -109,10 +103,7 @@ nrow(Final[Final$Spark==1,])
 
 Final$Final <- NULL
 
-is.numeric(Final$Mark1)
-is.numeric(Final$MP4)
-is.numeric(Final$MP3)
-is.numeric(Final$MP4)
+
 ```
 
 Next we run our regressions. All our observations are at the student-subject level. The first three regressions have the following format:
@@ -231,11 +222,16 @@ summary(lm3_subj_adv)
 ```
 
 
-Next we look at the kids who left our sample after Marking Period 2. Note that the SPARK students who dropped out of the sample had high MP1 grades, and an MP1 to MP2 drop that was not unusually great. We do not know why they left the sample.
+Next we look at the kids who left our sample after Marking Period 2. Note that the SPARK students who dropped out of the sample had high MP1 grades, and an MP1 to MP2 drop that was not unusually great. We do not know why they left the sample. The overall number of kids leaving the sample was not great.
 
 ```{r}
 dropouts <- Final[which(is.na(Final$MP4)),]
-dropouts
+dropouts$anonID<-anonymize(dropouts$StudentID, .n_chars = 5, .algo = "crc32")
+myvars<-c("anonID", "Mark1", "Mark2", "MP3", "MP4")
+
+dropouts_anon<-dropouts[myvars]
+dropouts_anon
+
 as.numeric(dropouts$Mark2)-as.numeric(dropouts$Mark1)
 summary(as.numeric(dropouts$Mark2)-as.numeric(dropouts$Mark1))
 summary(as.numeric(Final$Mark2)-as.numeric(Final$Mark1))
