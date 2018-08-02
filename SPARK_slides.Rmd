@@ -1,0 +1,85 @@
+---
+title: "SPARK Evaluation"
+author: "Fil Babalievsky and Atishay Sehgal"
+date: "8/2/2018"
+output: beamer_presentation
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = FALSE)
+```
+
+
+```{r, echo=FALSE, message=FALSE, warning=FALSE}
+setwd("~/Dropbox/New SI Stuff/SPARK Eval")
+Final<-read.csv("Final_SPARK.csv")
+library(stargazer)
+```
+
+
+## Background
+
+- Dr. John Ratey: SPARK book, compiled evidence
+
+- Implemented in Naperville High, promising results but not randomized
+
+- Borough Hall: Closer to a true randomized design
+
+
+
+## Implementation
+
+- One High School split a group of <100 ninth graders into 3
+
+- Arbitrarily split by Gym class, no systematic differences
+
+- Aerobic exercise (heart rate near max) rather than sports
+
+
+## Empirical design
+
+Differences in Differences: Do SPARK kids' scores grow more from Marking Period 1 to Marking Periods 2, 3, 4? Is this different in different classes?
+
+- First: 
+
+\[\Delta_{i,s,m}=\alpha_m+\beta_m \cdot SPARK_i\]
+
+- Second: Split by classes
+
+\[\Delta_{i,s,m}=\sum_j\alpha_{j,m}+\sum_j\beta_{j,m} \cdot SPARK_{i,j}\]
+
+
+## Results: Simple Design
+
+```{r, results='asis', message=FALSE, echo=FALSE}
+lm1<-lm(diff1~Spark,data=Final)
+lm2<-lm(diff2~Spark,data=Final)
+lm3<-lm(diff3~Spark,data=Final)
+stargazer(lm1, lm2, lm3, type = "latex" , header=FALSE, column.labels = c("MP1 to MP2", "MP1 to MP3", "MP1 to MP4"), dep.var.labels.include = FALSE, column.sep.width = "0.5pt", font.size="tiny")
+```
+
+## Results: Class effects
+
+```{r, results='asis', message=FALSE, echo=FALSE}
+lm1a<-lm(diff1~Spark_math+Spark_sci+Spark_eng+math+eng,data=Final)
+lm2a<-lm(diff2~Spark_math+Spark_sci+Spark_eng+math+eng,data=Final)
+lm3a<-lm(diff3~Spark_math+Spark_sci+Spark_eng+math+eng,data=Final)
+stargazer(lm1a, lm2a, lm3a, type = "latex" , header=FALSE, column.labels = c("MP1 to MP2", "MP1 to MP3", "MP1 to MP4"), dep.var.labels.include = FALSE, column.sep.width = "0.5pt", font.size="tiny")
+```
+
+## Interpretation
+
+- Not huge, but still interesting
+
+- Generally larger for math, in line with prior studies
+
+
+## Going forward
+
+Ideally:
+
+- Large scale RCT (randomly assign all SI High School gym classes to SPARK or not)
+
+- Heterogeneous effects (measure baseline academic performance and fitness from kids, test if effects are bigger for less fit or lower scoring kids)
+
+- Pre register the study

@@ -22,7 +22,7 @@ The Staten Island Borough President’s office has conducted a preliminary inves
 # Program details:
 
 
-One of Staten Island’s public schools agreed to serve as a small scale pilot for SPARK. They took a group of just under one hundred ninth graders and, starting in the second quarter of the school year, divided them into two groups. The students in two physical education classes, comprising two thirds of the group, augmented their standard sports-based curriculum with intense cardio exercise. At the start of the program, this meant seven minutes of intense work on treadmills, eventually expanded to twenty. Observers reported that, even in the early phase of the program, students were visibly exhausted. Note that both groups of students had the same physical education curriculum in the first quarter, providing a useful baseline.
+One of Staten Island’s public schools agreed to serve as a small scale pilot for SPARK. They took a group of just under one hundred ninth graders and, starting in the second quarter of the school year, divided them into two groups. The students in two physical education classes, comprising two thirds of the group, replaced their standard sports-based curriculum with intense cardio exercise. At the start of the program, this meant seven minutes of intense work on treadmills, eventually expanded to twenty. Observers reported that, even in the early phase of the program, students were visibly exhausted. Note that both groups of students had the same physical education curriculum in the first quarter, providing a useful baseline.
 
 A typical physical education curriculum focuses more heavily on sports than on getting students' heart rate up. SPARK replaced the games that students typically play with intense workouts designed to keep them at a high percentage of their maximum heart rates.
 
@@ -37,7 +37,7 @@ Our first research design compares the difference in grades between the first an
 
 The regression design is as follows:
 
-\[\Delta_{i,s,m}=\alpha+\beta \cdot SPARK_i\]
+\[\Delta_{i,s,m}=\alpha_m+\beta_m \cdot SPARK_i\]
 
 Here $\Delta_{i,s,m}$ was the change in score for student $i$ in subject $s$ from marking period 1 to marking period $m$, and $SPARK_i$ is a dummy taking value 1 if and only if the student was in SPARK.
 
@@ -45,9 +45,9 @@ Our second research design considers the possibility that SPARK might have had d
 
 The design is as follows:
 
-\[\Delta_{i,s,m}=\alpha+\sum_j\gamma_j+\sum_j\beta_j \cdot SPARK_{i,j}\]
+\[\Delta_{i,s,m}=\sum_j\alpha_{j,m}+\sum_j\beta_{j,m} \cdot SPARK_{i,j}\]
 
-Here $\gamma_j$ takes value 1 if $j=s$ and zero otherwise, and $SPARK_{i,j}$ takes value 1 only if the student is in SPARK and if $j=s$.
+Here $\alpha_j$ takes value 1 if $j=s$ and zero otherwise, and $SPARK_{i,j}$ takes value 1 only if the student is in SPARK and if $j=s$.
 
 The levels of $j$ and $s$ correspond to math, English, and science.
 
@@ -123,6 +123,6 @@ Fryer Jr, R. G. (2017). The production of human capital in developed countries: 
 
 Graff Zivin, J., Hsiang, S. M., & Neidell, M. (2018). Temperature and human capital in the short and long run. Journal of the Association of Environmental and Resource Economists, 5(1), 77-105.
 
-Hendricks, Paul (2015). Anonymizer: Anonymize Data Containing Personally Identifiable Information. R package version 0.2.0. https://cran.r-project.org/web/packages/anonymizer/index.html
+Hendricks, Paul (2015). anonymizer: Anonymize Data Containing Personally Identifiable Information. R package version 0.2.0. https://cran.r-project.org/web/packages/anonymizer/index.html
 
 Hlavac, Marek (2018). stargazer: Well-Formatted Regression and Summary Statistics Tables. R package version 5.2.2. https://CRAN.R-project.org/package=stargazer
