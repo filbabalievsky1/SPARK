@@ -24,6 +24,8 @@ The Staten Island Borough President’s office has conducted a preliminary inves
 
 One of Staten Island’s public schools agreed to serve as a small scale pilot for SPARK. They took a group of just under one hundred ninth graders and, starting in the second quarter of the school year, divided them into two groups. The students in two physical education classes, comprising two thirds of the group, replaced their standard sports-based curriculum with intense cardio exercise. At the start of the program, this meant seven minutes of intense work on treadmills, eventually expanded to twenty. Observers reported that, even in the early phase of the program, students were visibly exhausted. Note that both groups of students had the same physical education curriculum in the first quarter, providing a useful baseline.
 
+Also, the students were still subject to the state physical education curriculum.
+
 A typical physical education curriculum focuses more heavily on sports than on getting students' heart rate up. SPARK replaced the games that students typically play with intense workouts designed to keep them at a high percentage of their maximum heart rates.
 
 The students were split based on convenience. Two gym classes were arbitrarily chosen and the third was left out as a control, but the school officials who separated the students did not do so based on any systematic difference between the students.
@@ -106,11 +108,13 @@ We include an R notebook in the replication page for this project with more robu
 
 # Recommendations
 
-This minimal pilot program offers mild evidence that replacing students' sports-based curriculum with aerobic activity may improve academic performance. We recommend exploring this effect further. The ideal research design would be a pre-registered randomized trial, publicly outlining the empirical strategy prior to implementing it.
+This minimal pilot program offers mild evidence that replacing students' sports-based curriculum with aerobic activity may improve academic performance. Given that this is just in addition to the more obvious fitness benefits of exercise, we recommend exploring this effect further. The ideal research design would be a pre-registered randomized trial, publicly outlining the empirical strategy prior to implementing it.
 
 We suggest that every gym class in Staten Island be placed into a treatment and control group at random, with the treatment group switching from a sports-based curriculum to an aerobic curriculum.
 
 We also recommend collecting baseline data on each of the students, especially academic performance in the prior year and level of fitness going into the school year, and committing in the pre-registration plan to divide students along these pre-selected variables to test for heterogeneous effects. This will help us learn whether less fit or less academically successful students benefit more from this intervention.
+
+Lastly, we recommend that the replication file with all the codes needed to produce these analyses be made public. This will enhance our credibility and allow others to understand and perhaps suggest improvements for our analysis. The data, which includes identifying information, will not be made available. In our output files, we also anonymize all identifying information.
 
 
 
