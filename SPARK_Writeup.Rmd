@@ -22,9 +22,9 @@ The Staten Island Borough President’s office has conducted a preliminary inves
 # Program details:
 
 
-One of Staten Island’s public schools agreed to serve as a small scale pilot for SPARK. They took a group of just under one hundred ninth graders and, starting in the second quarter of the school year, divided them into two groups. The students in two physical education classes, comprising two thirds of the group, replaced their standard sports-based curriculum with intense cardio exercise. At the start of the program, this meant seven minutes of intense work on treadmills, eventually expanded to twenty. Observers reported that, even in the early phase of the program, students were visibly exhausted. Note that both groups of students had the same physical education curriculum in the first quarter, providing a useful baseline.
+One of Staten Island’s public schools agreed to serve as a small scale pilot for SPARK. They took a group of just under one hundred ninth graders and, starting in the second quarter of the school year, divided them into two groups. The students in two physical education classes, comprising two thirds of the group, supplemented their standard sports-based curriculum with intense cardio exercise. At the start of the program, this meant seven minutes of intense work on treadmills, eventually expanded to twenty, for three days per school week. Observers reported that, even in the early phase of the program, students were visibly exhausted. Note that both groups of students had the same physical education curriculum in the first quarter, providing a useful baseline.
 
-Also, the students were still subject to the state physical education curriculum.
+The students were still subject to the state physical education curriculum, which focuses more on sports than intense aerobic activity. The implementation of SPARK was therefore not as extensive as any of the partners involved would have wanted.
 
 A typical physical education curriculum focuses more heavily on sports than on getting students' heart rate up. SPARK replaced the games that students typically play with intense workouts designed to keep them at a high percentage of their maximum heart rates.
 
@@ -112,9 +112,11 @@ This minimal pilot program offers mild evidence that replacing students' sports-
 
 We suggest that every gym class in Staten Island be placed into a treatment and control group at random, with the treatment group switching from a sports-based curriculum to an aerobic curriculum.
 
+A waiver from the State curriculum would allow a more aggressive implementation of SPARK, which as noted was constrained to twenty minutes a day for three days a week.
+
 We also recommend collecting baseline data on each of the students, especially academic performance in the prior year and level of fitness going into the school year, and committing in the pre-registration plan to divide students along these pre-selected variables to test for heterogeneous effects. This will help us learn whether less fit or less academically successful students benefit more from this intervention.
 
-Lastly, we recommend that the replication file with all the codes needed to produce these analyses be made public. This will enhance our credibility and allow others to understand and perhaps suggest improvements for our analysis. The data, which includes identifying information, will not be made available. In our output files, we also anonymize all identifying information.
+Lastly, we recommend that the codes needed to produce these analyses be made public. This will enhance our credibility and allow others to understand and perhaps suggest improvements for our analysis. The data, which includes identifying information, will not be made available. We also anonymize all identifying information in our output files.
 
 
 
