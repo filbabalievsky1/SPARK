@@ -19,21 +19,28 @@ library(stargazer)
 
 ## Background
 
-- Dr. John Ratey: SPARK book, compiled evidence
+- Dr. John Ratey: SPARK book, compiled evidence that aerobic exercise improves cognition
 
-- Implemented in Naperville High, promising results but not randomized
+- Implemented in Naperville High for academically at-risk children, promising results but not randomized 
 
-- Borough Hall: Closer to a true randomized design
+- Promising results from an RCT with obese young (7-11 year old) children in Georgia
 
+- Borough Hall: Closer to a true randomized design than Naperville, very different population than Georgia, not pre-selected based on how likely they were to benefit
 
 
 ## Implementation
 
-- One High School split a group of <100 ninth graders into 3
+- One High School split a group of <100 ninth graders into 3 gym classes
 
-- Arbitrarily split by Gym class, no systematic differences
+- Arbitrarily split by Gym class, not based on systematic differences
 
-- Aerobic exercise (heart rate near max) rather than sports
+- One quarter where all had same curriculum
+
+- Aerobic exercise (heart rate near max) along with sports
+
+- Implementation limited by state curriculum
+
+- 3 days per week, 7 minutes in first quarter and 20 thereafter
 
 
 ## Empirical design
@@ -69,9 +76,13 @@ stargazer(lm1a, lm2a, lm3a, type = "latex" , header=FALSE, column.labels = c("MP
 
 ## Interpretation
 
-- Not huge, but still interesting
+- Coefficients are points out of 100, so the coefficient of 2.8 on the 4th quarter math results means that SPARK kids had >0.28 grade levels of growth compared to non-SPARK
+
+- Not huge and not as consistent as we would like, but still interesting
 
 - Generally larger for math, in line with prior studies
+
+- Hints that Georgia results could scale and that Naperville results could hold
 
 
 ## Going forward
@@ -80,6 +91,13 @@ Ideally:
 
 - Large scale RCT (randomly assign all SI High School gym classes to SPARK or not)
 
-- Heterogeneous effects (measure baseline academic performance and fitness from kids, test if effects are bigger for less fit or lower scoring kids)
+- (I assume it is more feasible to block-randomize gym classes rather than to split individual classes)
 
-- Pre register the study
+- Get as much leeway as possible from State Education Dept
+
+- Test for heterogeneous effects: measure baseline academic performance and fitness from kids, test if effects are bigger for less fit or lower scoring kids
+
+- Pre register the study for greater credibility and visibility
+
+- Post code publicly on GitHub (best practice, lends credibility and lets others check our work)
+

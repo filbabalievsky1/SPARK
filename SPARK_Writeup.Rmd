@@ -19,6 +19,14 @@ library(stargazer)
 
 The Staten Island Borough President’s office has conducted a preliminary investigation into the effects of aerobic exercise on academic achievement, in consultation with Dr. John Ratey. This program was inspired by and named for his book “SPARK”, an investigation of the benefits of exercise. This was a minimal pilot program intended as a proof of concept, yet it may have had a small positive effect.
 
+# Similar studies
+
+Dr. Ratey helped Naperville High implement a small scale study of the effects of exercise on at-risk children and found positive results, although the study was small and not randomized.
+
+One other promising piece of evidence comes from a small randomized trial in Augusta, Georgia. It found that obese young children randomly assigned to different levels of intense exercise did better on standardized tests and assessments of executive functioning, and that their gains scaled with the duration of the exercise.
+
+Our study is not an ideal RCT but it targets a different group of students than the Georgia study, which helps us learn more about how effects might generalize. In particular, our study was not targeted towards at-risk or obese children.
+
 # Program details:
 
 
@@ -125,6 +133,8 @@ Lastly, we recommend that the codes needed to produce these analyses be made pub
 
 Beautrelet, I. (2016, December 13). Clustered Standard Errors in R [Web log post]. Retrieved August 2, 2018, from https://economictheoryblog.com/2016/12/13/clustered-standard-errors-in-r/
 
+Davis, C. L., Tomporowski, P. D., McDowell, J. E., Austin, B. P., Miller, P. H., Yanasak, N. E., . . . Naglieri, J. A. (2011). Exercise improves executive function and achievement and alters brain activation in overweight children: A randomized, controlled trial. Health Psychology, 30(1), 91-98.
+
 Fryer Jr, R. G. (2017). The production of human capital in developed countries: Evidence from 196 randomized field experimentsa. In Handbook of Economic Field Experiments (Vol. 2, pp. 95-322). North-Holland.
 
 Graff Zivin, J., Hsiang, S. M., & Neidell, M. (2018). Temperature and human capital in the short and long run. Journal of the Association of Environmental and Resource Economists, 5(1), 77-105.
@@ -132,3 +142,5 @@ Graff Zivin, J., Hsiang, S. M., & Neidell, M. (2018). Temperature and human capi
 Hendricks, Paul (2015). anonymizer: Anonymize Data Containing Personally Identifiable Information. R package version 0.2.0. https://cran.r-project.org/web/packages/anonymizer/index.html
 
 Hlavac, Marek (2018). stargazer: Well-Formatted Regression and Summary Statistics Tables. R package version 5.2.2. https://CRAN.R-project.org/package=stargazer
+
+Valdeo, D. (2008, January 13). Exercise Seen as Priming Pump for Students’ Academic Strides. Retrieved August 14, 2018, from https://www.mdc.edu/main/images/Exercise_Seen_as_Priming_Pump_for_Students_tcm6-22258.pdf
