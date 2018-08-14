@@ -58,6 +58,8 @@ Differences in Differences: Do SPARK kids' scores grow more from Marking Period 
 
 ## Results: Simple Design
 
+How to read this table: a score of 2.3 in the first column and row means that SPARK kids' scores went up by 2.3 points more than non-SPARK kids from MP1 to MP2. A score of 0.5 in the second column means that SPARK scores went up by 0.5 points from MP1 to MP3 (it is not cumulative.)
+
 ```{r, results='asis', message=FALSE, echo=FALSE}
 lm1<-lm(diff1~Spark,data=Final)
 lm2<-lm(diff2~Spark,data=Final)
@@ -66,6 +68,8 @@ stargazer(lm1, lm2, lm3, type = "latex" , header=FALSE, column.labels = c("MP1 t
 ```
 
 ## Results: Class effects
+
+How to read this table: Same as before, but broken up by class in the first 3 rows
 
 ```{r, results='asis', message=FALSE, echo=FALSE}
 lm1a<-lm(diff1~Spark_math+Spark_sci+Spark_eng+math+eng,data=Final)
@@ -89,15 +93,32 @@ stargazer(lm1a, lm2a, lm3a, type = "latex" , header=FALSE, column.labels = c("MP
 
 Ideally:
 
-- Large scale RCT (randomly assign all SI High School gym classes to SPARK or not)
-
-- (I assume it is more feasible to block-randomize gym classes rather than to split individual classes)
+- Large scale RCT (maybe randomly assign all SI High School gym classes to SPARK or non-SPARK)
 
 - Get as much leeway as possible from State Education Dept
 
-- Test for heterogeneous effects: measure baseline academic performance and fitness from kids, test if effects are bigger for less fit or lower scoring kids
+- Test for heterogeneous effects: maybe measure baseline academic performance and fitness from kids, test if effects are bigger for less fit or lower scoring kids
 
 - Pre register the study for greater credibility and visibility
 
 - Post code publicly on GitHub (best practice, lends credibility and lets others check our work)
+
+
+## Possible Interest
+
+- The prospect of running an RCT with thousands of students ought to make academics salivate
+
+- We have offered some suggestions for how to run a larger study but it would be good to bring in full time researchers who specialize in this
+
+
+## Who to work with
+
+- J-PAL North America? Prominent team of economists, focused on randomization, big on contributing to public policy
+
+- EdLabs? Sort of in turmoil at the moment, and their director wouldn't talk to us last time. Would have been the most logical choice until March 2018; avoid until/unless they work out their issues
+
+- Sue Dynarski? Michigan education economist noted for public outreach (maintains a colorful Twitter page), fitness enthusiast
+
+
+
 
