@@ -124,7 +124,6 @@ A waiver from the State curriculum would allow a more aggressive implementation 
 
 We also recommend collecting baseline data on each of the students, especially academic performance in the prior year and level of fitness going into the school year, and committing in the pre-registration plan to divide students along these pre-selected variables to test for heterogeneous effects. This will help us learn whether less fit or less academically successful students benefit more from this intervention.
 
-Lastly, we recommend that the codes needed to produce these analyses be made public. This will enhance our credibility and allow others to understand and perhaps suggest improvements for our analysis. The data, which includes identifying information, will not be made available. We also anonymize all identifying information in our output files.
 
 
 
