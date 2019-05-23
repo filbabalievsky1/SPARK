@@ -1,128 +1,174 @@
 ---
 title: "Spark Evaluation"
-author: "Fil Babalievsky and Atishay Sehgal"
-date: "8/1/2018"
-output: pdf_document
-abstract: We evaluate the effect of Project SPARK, an effort to introduce aerobic exercise to Staten Island's K-12 PE classes, on academic outcomes. We find mild evidence that it may have had a positive impact, and recommend further steps.
+author: "Fil Babalievsky[^1]"
+date: "May 2019"
+output:
+  pdf_document: default
+  word_document: default
+abstract: We evaluate the effect of Project SPARK, an effort to introduce aerobic
+  exercise to Staten Island's K-12 PE classes, on academic outcomes. We find some
+  evidence that it may have had a positive impact, and recommend further steps.
 ---
+
+[^1]:Babalievsky worked as the Data Fellow at the Staten Island Borough President’s Office in the Summers of 2017 and 2018. He has a Bachelor’s in Economics from Yale and is currently a second-year Economics Ph.D at the University of Minnesota. Atishay Sehgal provided significant assistance. Sehgal has an MA in Statistics from Columbia and worked as a Data Fellow in the Summer and Fall of 2018.
 
 ```{r, echo=FALSE, message=FALSE, warning=FALSE}
 setwd("~/Dropbox/New SI Stuff/SPARK Eval")
 Final<-read.csv("Final_SPARK.csv")
 library(stargazer)
+library(RCurl)
+library(readxl)
+library(anonymizer)
+url_robust <- "https://raw.githubusercontent.com/IsidoreBeautrelet/economictheoryblog/master/robust_summary.R"
+eval(parse(text = getURL(url_robust, ssl.verifypeer = FALSE)),
+     envir=.GlobalEnv)
 
 ```
 
+# Acknowledgement
 
+We want to thank Principal Deirdre DeAngelis, Assistant Principal Richard Rucireto, and Julie Gambale-Kubiak at New Dorp High school. This pilot would not have been possible without their dedicated collaboration.
 
 # Introduction:
 
-The Staten Island Borough President’s office has conducted a preliminary investigation into the effects of aerobic exercise on academic achievement, in consultation with Dr. John Ratey. This program was inspired by and named for his book “SPARK”, an investigation of the benefits of exercise. This was a minimal pilot program intended as a proof of concept, yet it may have had a small positive effect.
+|     The Staten Island Borough President’s office has conducted a preliminary investigation into the effects of aerobic exercise on academic achievement, in consultation with Dr. John Ratey. This program was inspired by and named for his book “SPARK”[^2], an investigation of the benefits of exercise. This was a small-scale pilot program intended as a proof of concept, yet it may have had a small positive effect.
+
+[^2]: Ratey, John J., Hagerman, Eric. Spark: The Revolutionary New Science Of Exercise And The Brain. New York : Little, Brown, 2008. Print.
 
 # Similar studies
 
-Dr. Ratey helped Naperville High implement a small scale study of the effects of exercise on at-risk children and found positive results, although the study was small and not randomized.
+|     Dr. Ratey helped Naperville High implement a pilot scale study of the effects of exercise on at-risk children and found positive results, although the study was small and not randomized.
 
-One other promising piece of evidence comes from a small randomized trial in Augusta, Georgia. It found that obese young children randomly assigned to different levels of intense exercise did better on standardized tests and assessments of executive functioning, and that their gains scaled with the duration of the exercise.
+|     One other promising piece of evidence comes from a small randomized trial in Augusta, Georgia conducted by Tomporowski et al (2011). It found that obese young children randomly assigned to different levels of intense exercise did better on standardized tests and assessments of executive functioning, and that their gains scaled with the duration of the exercise.
 
-Our study is not an ideal RCT but it targets a different group of students than the Georgia study, which helps us learn more about how effects might generalize. In particular, our study was not targeted towards at-risk or obese children.
+|     Our study is not an ideal RCT but it targets a different group of students than the Georgia study, which helps us learn more about how effects might generalize. In particular, our study was not limited to at-risk or obese children.
 
 # Program details:
 
 
-One of Staten Island’s public schools agreed to serve as a small scale pilot for SPARK. They took a group of just under one hundred ninth graders and, starting in the second quarter of the school year, divided them into two groups. The students in two physical education classes, comprising two thirds of the group, supplemented their standard sports-based curriculum with intense cardio exercise. At the start of the program, this meant seven minutes of intense work on treadmills, eventually expanded to twenty, for three days per school week. Observers reported that, even in the early phase of the program, students were visibly exhausted. Note that both groups of students had the same physical education curriculum in the first quarter, providing a useful baseline.
+|     New Dorp High School[^3], one of Staten Island’s public schools, agreed to serve as a small scale pilot for SPARK. School administrators selected a group of just under one hundred ninth graders and, starting in the second quarter of the school year, divided them into two groups. The students in two physical education classes, comprising two thirds of the group, supplemented their standard sports-based curriculum with intense aerobic exercise. At the start of the program, this meant seven minutes of intense cardio , eventually expanded to fifteen, for three days per school week. Observers reported that, even in the early phase of the program, students were visibly exhausted. Note that both treatment and control groups of students had the same physical education curriculum in the first quarter, providing a useful baseline.
 
-The students were still subject to the state physical education curriculum, which focuses more on sports than intense aerobic activity. The implementation of SPARK was therefore not as extensive as any of the partners involved would have wanted.
+[^3]:  https://www.newdorphs.org/apps/pages/index.jsp?uREC_ID=249165&type=d&pREC_ID=573908
 
-A typical physical education curriculum focuses more heavily on sports than on getting students' heart rate up. SPARK replaced the games that students typically play with intense workouts designed to keep them at a high percentage of their maximum heart rates.
+|     The students were still subject to the New York State physical education curriculum, with an emphasis on sports-based skill development rather than  sustained aerobic activity[^4]. The implementation of SPARK was, therefore, not as extensive as any of the partners involved would have wanted.
 
-The students were split based on convenience. Two gym classes were arbitrarily chosen and the third was left out as a control, but the school officials who separated the students did not do so based on any systematic difference between the students.
+[^4]:There is a section of the Physical Education curriculum devoted to aerobic activity and cardio, but just as schools cannot have their students play volleyball for more than one marking period, they cannot shift their entire Physical Education course load towards aerobic actibity.
+
+
+|     In fact, a typical physical education curriculum nationally is centered around sports-based skill development—without any specific requirements on getting students’ heart rate up. Schools implementing SPARK replaced the sports-based games that students typically play with intense workouts designed to keep them at a high percentage of their maximum heart rates which we replicated for the first seven to fifteen minutes of each class in our pilot at New Dorp.
+
+|     The students were split based on logistical contraints. Two gym classes were arbitrarily chosen and the third was left out as a control, but the school officials who separated the students did not do so based on any systematic difference between the students.
+
 
 
 # Research Design and Data:
 
-We were given data on student performance in math, English, and science classes, with one average score per quarter. Our main specification consists of a differences in differences approach. The first quarter, when all students had the same gym curriculum, provides a baseline for comparison. We test if student academic growth differed between treatment and control over the remaining marking periods.
+|     We were given data on student performance in math, English, and science classes for all ninth graders in New Dorp. Our main specification consisted of a differences in differences approach. The first quarter, when SPARK pilot students in all three gym classes had the same  curriculum, provideed a baseline for comparison. We tested if student academic growth differed between treatment and control over the remaining marking periods.
 
-Our first research design compares the difference in grades between the first and subsequent marking periods for SPARK and non SPARK students, without controls for type of class. We run three regressions in this format, with the three dependent variables being the change in grades between the first marking period and the three subsequent marking periods.
+|     Our first research design compared the difference in grades between the first and subsequent marking periods for SPARK and non SPARK students, without controls for type of class. We ran three regressions in this format, with the three dependent variables being the change in grades between the first marking period and the three subsequent marking periods.
 
-The regression design is as follows:
+|     The regression design is as follows:
 
 \[\Delta_{i,s,m}=\alpha_m+\beta_m \cdot SPARK_i\]
 
-Here $\Delta_{i,s,m}$ was the change in score for student $i$ in subject $s$ from marking period 1 to marking period $m$, and $SPARK_i$ is a dummy taking value 1 if and only if the student was in SPARK.
+|     Here $\Delta_{i,s,m}$ was the change in score for student $i$ in subject $s$ from marking period 1 to marking period $m$, and $SPARK_i$ is a dummy taking value 1 if and only if the student was in SPARK. 
 
-Our second research design considers the possibility that SPARK might have had different effects on different subjects. We therefore add controls for the type of subject and replace the SPARK dummy variable with an interaction term between SPARK and each of the three types of classes.
+|     Our second research design considered the possibility that SPARK might have had different effects on different subjects. We, therefore, added controls for the type of subject and replaced the SPARK dummy variable with an interaction term between SPARK and each of the three types of classes.
 
-The design is as follows:
+|     The design is as follows:
 
-\[\Delta_{i,s,m}=\sum_j\alpha_{j,m}+\sum_j\beta_{j,m} \cdot SPARK_{i,j}\]
+\[\Delta_{i,s,m}=\sum_j\alpha_{j,m}I_{j}+\sum_j\beta_{j,m} \cdot SPARK_{i,j}\]
 
-Here $\alpha_j$ takes value 1 if $j=s$ and zero otherwise, and $SPARK_{i,j}$ takes value 1 only if the student is in SPARK and if $j=s$.
+|     Here $I_j$ takes value 1 if $j=s$ and zero otherwise, and $SPARK_{i,j}$ takes value 1 only if the student is in SPARK and if $j=s$.
 
-The levels of $j$ and $s$ correspond to math, English, and science.
+|     The levels of $j$ and $s$ correspond to math, English, and science.
 
 
-As a handful of students were in a higher-level math course, we run one further test where the levels of $j$ and $s$ correspond to English, science, and each of the two math courses.
+|     As a handful of students were in a higher-level math course, we ran one further test where the levels of $j$ and $s$ corresponded to English, science, and each of the two math courses.
 
-All outcome variables are based on student grades, which are on the usual 0 to 100 scale. A 2.5 point coefficient, therefore, means that SPARK students saw their scores increase by a quarter of a grade level relative to non-SPARK students.
+|     All outcome variables are based on student grades, which are on the usual 0 to 100 scale. A 2.5 point coefficient, therefore, means that SPARK students saw their scores increase by a quarter of a grade level relative to non-SPARK students.
 
-In both regression designs, the observations are student-classes.
+|     In all regression designs, the observations are student-classes. We cluster at the student level, using code made by Isidore Beautrelet.
 
-\pagebreak
 
 # Results:
 
-First we report the simplest output, not broken up by subject. Note that some students did drop out of the sample in the middle of the school year. We do not know why this is the case.
+|     First we report the simplest output, not broken up by subject. Note that some students did drop out of the sample in the middle of the school year. We do not know why this is the case.
 
 ```{r, results='asis', message=FALSE, echo=FALSE}
 lm1<-lm(diff1~Spark,data=Final)
+#summary(lm1)
+#summary(lm1, cluster=c("StudentID"))
 lm2<-lm(diff2~Spark,data=Final)
+#summary(lm2)
+#summary(lm2, cluster=c("StudentID"))
 lm3<-lm(diff3~Spark,data=Final)
-stargazer(lm1, lm2, lm3, type = "latex" , header=FALSE, column.labels = c("MP1 to MP2", "MP1 to MP3", "MP1 to MP4"), dep.var.labels.include = FALSE)
+#summary(lm3)
+#summary(lm3, cluster=c("StudentID"))
+cluster_se1 <- as.vector(summary(lm1,cluster = c("StudentID"))$coefficients[,"Std. Error"])
+cluster_se2 <- as.vector(summary(lm2,cluster = c("StudentID"))$coefficients[,"Std. Error"])
+cluster_se3 <- as.vector(summary(lm3,cluster = c("StudentID"))$coefficients[,"Std. Error"])
+#stargazer(lm1, lm2, lm3, type = "latex" , header=FALSE, column.labels = c("MP1 to MP2", "MP1 to MP3", "MP1 to MP4"), dep.var.labels.include = FALSE)
+stargazer(lm1, lm2, lm3, type = "latex" , header=FALSE, column.labels = c("MP1 to MP2", "MP1 to MP3", "MP1 to MP4"), dep.var.labels.include = FALSE,se = list(cluster_se1, cluster_se2, cluster_se3))
 ```
 
 \pagebreak
 
-Next, we break out results by subject.
+|     Next, we break out results by subject.
 
 ```{r, results='asis', message=FALSE, echo=FALSE}
 lm1a<-lm(diff1~Spark_math+Spark_sci+Spark_eng+math+eng,data=Final)
+#summary(lm1a)
+#summary(lm1a, cluster=c("StudentID"))
 lm2a<-lm(diff2~Spark_math+Spark_sci+Spark_eng+math+eng,data=Final)
+#summary(lm2a)
+#summary(lm2a, cluster=c("StudentID"))
 lm3a<-lm(diff3~Spark_math+Spark_sci+Spark_eng+math+eng,data=Final)
-stargazer(lm1a, lm2a, lm3a, type = "latex" , header=FALSE, column.labels = c("MP1 to MP2", "MP1 to MP3", "MP1 to MP4"), dep.var.labels.include = FALSE)
+cluster_se1 <- as.vector(summary(lm1a,cluster = c("StudentID"))$coefficients[,"Std. Error"])
+cluster_se2 <- as.vector(summary(lm2a,cluster = c("StudentID"))$coefficients[,"Std. Error"])
+cluster_se3 <- as.vector(summary(lm3a,cluster = c("StudentID"))$coefficients[,"Std. Error"])
+#stargazer(lm2a,type = "text",se = list(cluster_se))
+
+#stargazer(lm1a, lm2a, lm3a, type = "latex" , header=FALSE, column.labels = c("MP1 to MP2", "MP1 to MP3", "MP1 to MP4"), dep.var.labels.include = FALSE)
+
+stargazer(lm1a, lm2a, lm3a, type = "latex" , header=FALSE, column.labels = c("MP1 to MP2", "MP1 to MP3", "MP1 to MP4"), dep.var.labels.include = FALSE,se = list(cluster_se1, cluster_se2, cluster_se3))
 ```
 
 \pagebreak
 
-Finally we break math into two separate categories.
+|     Finally, we break math into two separate categories.
 
 ```{r, results='asis', message=FALSE, echo=FALSE}
 lm1b<-lm(diff1~Spark_math+Spark_sci+Spark_eng+Spark_adv_math+math+eng+adv_math,data=Final)
 lm2b<-lm(diff2~Spark_math+Spark_sci+Spark_eng+Spark_adv_math+math+eng+adv_math,data=Final)
 lm3b<-lm(diff3~Spark_math+Spark_sci+Spark_eng+Spark_adv_math+math+eng+adv_math,data=Final)
-stargazer(lm1b, lm2b, lm3b, type = "latex" , header=FALSE, column.labels = c("MP1 to MP2", "MP1 to MP3", "MP1 to MP4"), dep.var.labels.include = FALSE)
+cluster_se1 <- as.vector(summary(lm1b,cluster = c("StudentID"))$coefficients[,"Std. Error"])
+cluster_se2 <- as.vector(summary(lm2b,cluster = c("StudentID"))$coefficients[,"Std. Error"])
+cluster_se3 <- as.vector(summary(lm3b,cluster = c("StudentID"))$coefficients[,"Std. Error"])
+stargazer(lm1b, lm2b, lm3b, type = "latex" , header=FALSE, column.labels = c("MP1 to MP2", "MP1 to MP3", "MP1 to MP4"), dep.var.labels.include = FALSE,se = list(cluster_se1, cluster_se2, cluster_se3))
 ```
 
 \pagebreak
 
 # Analysis
 
-The point estimates for math were generally higher than the point estimates for the other subjects, and were more often significant. The greater responsiveness of math scores to an intervention is in line with much of the rest of the literature (see Graff Zivin et al 2018 or the discussion in Fryer 2017).
+|     The point estimates for math were generally higher than the point estimates for the other subjects, and were more often significant. The greater responsiveness of math scores to an intervention is in line with much of the rest of the literature (see Graff Zivin et al 2018 or the discussion in Fryer 2017).
 
-Most of the point estimates were positive, and a handful were significant. The largest effect size was a roughly one-third grade level difference in math from quarter one to quarter two. That is, students in the treatment group saw a change in grades that was one third of a grade level higher from marking period to marking period than the control. Still, these results were not all that large or significant.
+|     Most of the point estimates were positive, and a handful were significant. The largest effect size was a roughly one-third grade level difference in math from quarter one to quarter two. That is, students in the treatment group saw a change in grades that was one third of a grade level higher from marking period to marking period than the control. Still, these results were not large, and not all were significant at the five percent or ten percent levels.
 
-We include an R notebook in the replication page for this project with more robustness tests, none of which meaningfully alter our conclusions.
+|     We include an R notebook in the replication page for this project with more robustness tests, none of which meaningfully alter our conclusions.
 
 
 # Recommendations
 
-This minimal pilot program offers mild evidence that replacing students' sports-based curriculum with aerobic activity may improve academic performance. Given that this is just in addition to the more obvious fitness benefits of exercise, we recommend exploring this effect further. The ideal research design would be a pre-registered randomized trial, publicly outlining the empirical strategy prior to implementing it.
+|     This  pilot program offers some positive evidence that replacing students’ sports-based skills curriculum with sustained, intense aerobic activity may improve academic performance. Given that this is just in addition to the more obvious fitness benefits of exercise, we recommend exploring this effect further. The ideal research design would be a pre-registered randomized trial, publicly outlining the empirical strategy prior to implementing it.
 
-We suggest that every gym class in Staten Island be placed into a treatment and control group at random, with the treatment group switching from a sports-based curriculum to an aerobic curriculum.
+|     We suggest that gym classes  across public schools on Staten Island be assigned into a treatment and control group at random, with the treatment group switching from a sports-based curriculum to an aerobic curriculum. The current study was limited to less than 100 students and 3 classes per student; thus to get more precision we would need a larger sample. A larger sample is always preferable, and it is fair to say that we will not learn much more beyond the pilot without a sample on the order of 1,000 students.
 
-A waiver from the State curriculum would allow a more aggressive implementation of SPARK, which as noted was constrained to twenty minutes a day for three days a week.
+|     A waiver from the New York State curriculum would allow a more faithful implementation of SPARK, which as noted was constrained to fifteen minutes a day for three days a week in our pilot. We would recommend shifting as much of the program as possible to aerobic fitness instead.
 
-We also recommend collecting baseline data on each of the students, especially academic performance in the prior year and level of fitness going into the school year, and committing in the pre-registration plan to divide students along these pre-selected variables to test for heterogeneous effects. This will help us learn whether less fit or less academically successful students benefit more from this intervention.
+|     We also recommend collecting baseline data on each of the students, especially academic performance in the prior year and level of fitness going into the school year, and committing in the pre-registration plan to divide students along these pre-selected variables to test for heterogeneous effects. We further recommend that the City partner with academic institutions that specialize in program evaluation and experimental designs. This will help us learn whether less fit or less academically successful students benefit more from this intervention.
+
 
 
 
